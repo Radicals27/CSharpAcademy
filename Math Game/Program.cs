@@ -2,7 +2,7 @@
 bool userIsPlaying = true;
 string userInput;
 List<string> previousQuestions = new List<string>();
-MathQuestion currentQuestionType = MathQuestion.ADDITION;
+MenuOptions currentQuestionType = MenuOptions.ADDITION;
 
 // Numbers
 Random random = new Random();
@@ -33,7 +33,8 @@ void DisplayMenu()
     Console.WriteLine("2. Subtraction");
     Console.WriteLine("3. Multiplication");
     Console.WriteLine("4. Division");
-    Console.WriteLine("0. Show previous questions");
+    Console.WriteLine("9. Show previous questions");
+    Console.WriteLine("0. Quit");
 }
 
 void ReadUserInput()
@@ -60,20 +61,23 @@ void HandleUserInput()
         switch (digit)
         {
             case 1:
-                currentQuestionType = MathQuestion.ADDITION;
+                currentQuestionType = MenuOptions.ADDITION;
                 break;
             case 2:
-                currentQuestionType = MathQuestion.SUBTRACTION;
+                currentQuestionType = MenuOptions.SUBTRACTION;
                 break;
             case 3:
-                currentQuestionType = MathQuestion.MULTIPLICATION;
+                currentQuestionType = MenuOptions.MULTIPLICATION;
                 break;
             case 4:
-                currentQuestionType = MathQuestion.DIVISION;
+                currentQuestionType = MenuOptions.DIVISION;
+                break;
+            case 9:
+                currentQuestionType = MenuOptions.NONE;
                 break;
             case 0:
-                currentQuestionType = MathQuestion.NONE;
-                break;
+                Environment.Exit(0);
+                return;
             default:
                 Console.WriteLine($"You entered an invalid digit, try again...");
                 Console.ReadKey();
@@ -89,7 +93,7 @@ void HandleUserInput()
     }
 }
 
-void ShowQuestion(MathQuestion questionType)
+void ShowQuestion(MenuOptions questionType)
 {
     randomNumber1 = random.Next(numberMin, numberMax + 1);
     randomNumber2 = random.Next(numberMin, numberMax + 1);
@@ -97,23 +101,24 @@ void ShowQuestion(MathQuestion questionType)
 
     switch (questionType)
     {
-        case MathQuestion.ADDITION:
+        case MenuOptions.ADDITION:
             correctAnswer = randomNumber1 + randomNumber2;
             mathOperator = "+";
             break;
-        case MathQuestion.SUBTRACTION:
+        case MenuOptions.SUBTRACTION:
             correctAnswer = randomNumber1 - randomNumber2;
             mathOperator = "-";
             break;
-        case MathQuestion.MULTIPLICATION:
+        case MenuOptions.MULTIPLICATION:
             correctAnswer = randomNumber1 * randomNumber2;
             mathOperator = "x";
             break;
-        case MathQuestion.DIVISION:
+        case MenuOptions.DIVISION:
+            GenerateDivisionNumbers();
             correctAnswer = randomNumber1 / randomNumber2;
             mathOperator = "/";
             break;
-        case MathQuestion.NONE:
+        case MenuOptions.NONE:
             ShowPreviousQuestions();
             return;
     }
@@ -122,11 +127,27 @@ void ShowQuestion(MathQuestion questionType)
     string question = $"What is {randomNumber1} {mathOperator} {randomNumber2}?";
     Console.WriteLine(question);
     ReadUserInput();
-    CheckAnswer(userInput, correctAnswer);
-    SaveQuestion($"{question}.  You entered: {userInput}");
+    ReportResult(question, userInput, correctAnswer);
 }
 
-void CheckAnswer(string userInput, int correctAnswer)
+void GenerateDivisionNumbers()
+{
+    bool foundValidNumbers = false;
+    randomNumber1 = random.Next(1, 101);
+
+    do
+    {
+        randomNumber2 = random.Next(1, 11);
+
+        if (randomNumber1 % randomNumber2 == 0)
+        {
+            foundValidNumbers = true;
+        }
+    }
+    while (foundValidNumbers == false);
+}
+
+void ReportResult(string question, string userInput, int correctAnswer)
 {
     if (userInput == null)
     {
@@ -140,22 +161,17 @@ void CheckAnswer(string userInput, int correctAnswer)
         if (intValue == correctAnswer)
         {
             Console.WriteLine($"Correct! Press any key to return to the main menu.");
+            SaveQuestion($"{question}.  You entered: {userInput}, which was CORRECT.");
         }
         else
         {
             Console.WriteLine($"Incorrect.  Press any key to return to the main menu.");
+            SaveQuestion($"{question}.  You entered: {userInput}, which was INCORRECT ({correctAnswer}).");
         }
     }
-    else if (double.TryParse(userInput, out double doubleValue))
+    else
     {
-        if (intValue == correctAnswer)
-        {
-            Console.WriteLine($"Correct! Press any key to return to the main menu.");
-        }
-        else
-        {
-            Console.WriteLine($"Incorrect.  Press any key to return to the main menu.");
-        }
+        Console.WriteLine($"Your answer was invalid. Press any key to return to the main menu.");
     }
 
     Console.ReadKey();
@@ -181,11 +197,12 @@ void ShowPreviousQuestions()
     return;
 }
 
-enum MathQuestion
+enum MenuOptions
 {
     NONE,
     ADDITION,
     SUBTRACTION,
     MULTIPLICATION,
     DIVISION,
+    QUIT,
 }
