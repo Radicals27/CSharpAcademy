@@ -1,0 +1,15 @@
+D:\Projects\CSharpAcademy\Math Game\bin\Debug\net9.0\Math Game.exe
+D:\Projects\CSharpAcademy\Math Game\bin\Debug\net9.0\Math Game.deps.json
+D:\Projects\CSharpAcademy\Math Game\bin\Debug\net9.0\Math Game.runtimeconfig.json
+D:\Projects\CSharpAcademy\Math Game\bin\Debug\net9.0\Math Game.dll
+D:\Projects\CSharpAcademy\Math Game\bin\Debug\net9.0\Math Game.pdb
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\Math Game.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\Math Game.AssemblyInfoInputs.cache
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\Math Game.AssemblyInfo.cs
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\Math Game.csproj.CoreCompileInputs.cache
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\Math Game.sourcelink.json
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\Math Game.dll
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\refint\Math Game.dll
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\Math Game.pdb
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\Math Game.genruntimeconfig.cache
+D:\Projects\CSharpAcademy\Math Game\obj\Debug\net9.0\ref\Math Game.dll
