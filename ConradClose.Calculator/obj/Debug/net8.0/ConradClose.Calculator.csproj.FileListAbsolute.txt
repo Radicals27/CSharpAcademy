@@ -1,0 +1,15 @@
+D:\Projects\CSharpAcademy\ConradClose.Calculator\bin\Debug\net8.0\ConradClose.Calculator.exe
+D:\Projects\CSharpAcademy\ConradClose.Calculator\bin\Debug\net8.0\ConradClose.Calculator.deps.json
+D:\Projects\CSharpAcademy\ConradClose.Calculator\bin\Debug\net8.0\ConradClose.Calculator.runtimeconfig.json
+D:\Projects\CSharpAcademy\ConradClose.Calculator\bin\Debug\net8.0\ConradClose.Calculator.dll
+D:\Projects\CSharpAcademy\ConradClose.Calculator\bin\Debug\net8.0\ConradClose.Calculator.pdb
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ConradClose.Calculator.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ConradClose.Calculator.AssemblyInfoInputs.cache
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ConradClose.Calculator.AssemblyInfo.cs
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ConradClose.Calculator.csproj.CoreCompileInputs.cache
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ConradClose.Calculator.sourcelink.json
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ConradClose.Calculator.dll
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\refint\ConradClose.Calculator.dll
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ConradClose.Calculator.pdb
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ConradClose.Calculator.genruntimeconfig.cache
+D:\Projects\CSharpAcademy\ConradClose.Calculator\obj\Debug\net8.0\ref\ConradClose.Calculator.dll
