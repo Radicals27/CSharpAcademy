@@ -1,0 +1,13 @@
+D:\Projects\CSharpAcademy\CalculatorLibrary\bin\Debug\net8.0\CalculatorLibrary.deps.json
+D:\Projects\CSharpAcademy\CalculatorLibrary\bin\Debug\net8.0\CalculatorLibrary.dll
+D:\Projects\CSharpAcademy\CalculatorLibrary\bin\Debug\net8.0\CalculatorLibrary.pdb
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\CalculatorLibrary.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\CalculatorLibrary.AssemblyInfoInputs.cache
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\CalculatorLibrary.AssemblyInfo.cs
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\CalculatorLibrary.csproj.CoreCompileInputs.cache
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\CalculatorLibrary.sourcelink.json
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\CalculatorLibrary.dll
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\refint\CalculatorLibrary.dll
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\CalculatorLibrary.pdb
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\ref\CalculatorLibrary.dll
+D:\Projects\CSharpAcademy\CalculatorLibrary\obj\Debug\net8.0\CalculatorLibrary.csproj.AssemblyReference.cache

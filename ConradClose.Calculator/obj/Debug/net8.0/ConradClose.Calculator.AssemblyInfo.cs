@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConradClose.Calculator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b436ed48e5ca30b5006989a71a6b5989b1fffdf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12529ce1839592164b7c86d128f866aa9c555754")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConradClose.Calculator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConradClose.Calculator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
