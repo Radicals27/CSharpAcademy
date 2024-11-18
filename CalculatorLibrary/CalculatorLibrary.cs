@@ -31,7 +31,7 @@ namespace CalculatorLibrary
 		private int GetRunCount()
 		{
 			JObject logData;
-			int runCount = 0;
+			int runCount = 1;
 
 			if (File.Exists(logFilePath))
 			{
@@ -49,6 +49,19 @@ namespace CalculatorLibrary
 			}
 
 			return runCount;
+		}
+
+		public string GetSymbolForCalculation(string input)
+		{
+			switch(input)
+			{
+				case "a": return "+";
+				case "s": return "-";
+				case "m": return "x";
+				case "d": return "/";
+			}
+
+			return "";
 		}
 
 		public double DoOperation(double num1, double num2, string op)
