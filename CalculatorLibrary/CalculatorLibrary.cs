@@ -55,13 +55,17 @@ namespace CalculatorLibrary
 		{
 			switch(input)
 			{
-				case "a": return "+";
-				case "s": return "-";
-				case "m": return "x";
-				case "d": return "/";
+				case "a": 
+					return "+";
+				case "s": 
+					return "-";
+				case "m": 
+					return "x";
+				case "d": 
+					return "/";
+				default: 
+					return "invalid calculation";
 			}
-
-			return "";
 		}
 
 		public double DoOperation(double num1, double num2, string op)
@@ -100,6 +104,7 @@ namespace CalculatorLibrary
 				default:
 					break;
 			}
+
 			writer.WritePropertyName("Result");
 			writer.WriteValue(result);
 			writer.WriteEndObject();
@@ -112,6 +117,22 @@ namespace CalculatorLibrary
 			writer.WriteEndArray();
 			writer.WriteEndObject();
 			writer.Close();
+		}
+
+		public struct CalculationData
+		{
+			public double num1;
+			public double num2;
+			public double finalResult;
+			public string operand;
+
+			public CalculationData(double cleanNum1, double cleanNum2, string op, double result) : this()
+			{
+				num1 = cleanNum1;
+				num2 = cleanNum2;
+				operand = op;
+				finalResult = result;
+			}
 		}
 	}
 }
