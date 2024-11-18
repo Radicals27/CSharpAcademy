@@ -1,21 +1,54 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CalculatorLibrary
 {
 	public class Calculator
 	{
-
 		JsonWriter writer;
+		string logFilePath = "calculatorlog.json";
+		string runCounter = "runCounter";
+		int runCount;
 
 		public Calculator()
 		{
-			StreamWriter logFile = File.CreateText("calculatorlog.json");
+			runCount = GetRunCount();
+
+			StreamWriter logFile = File.CreateText(logFilePath);  // Create the log file
 			logFile.AutoFlush = true;
-			writer = new JsonTextWriter(logFile);
+			writer = new JsonTextWriter(logFile);  // Initialise the json writer to the logfile
 			writer.Formatting = Formatting.Indented;
 			writer.WriteStartObject();
+
+			writer.WritePropertyName(runCounter);
+			writer.WriteValue(runCount);
+
 			writer.WritePropertyName("Operations");
 			writer.WriteStartArray();
+		}
+
+		// Gets how many times the app has been run, stored in log file
+		private int GetRunCount()
+		{
+			JObject logData;
+			int runCount = 0;
+
+			if (File.Exists(logFilePath))
+			{
+				string json = File.ReadAllText(logFilePath);
+				logData = JObject.Parse(json);
+
+				if (logData.ContainsKey(runCounter))
+				{
+					runCount = (int)logData[runCounter] + 1;
+				}
+				else
+				{
+					runCount = 1;
+				}
+			}
+
+			return runCount;
 		}
 
 		public double DoOperation(double num1, double num2, string op)
@@ -27,7 +60,7 @@ namespace CalculatorLibrary
 			writer.WritePropertyName("Operand2");
 			writer.WriteValue(num2);
 			writer.WritePropertyName("Operation");
-			// Use a switch statement to do the math.
+
 			switch (op)
 			{
 				case "a":
