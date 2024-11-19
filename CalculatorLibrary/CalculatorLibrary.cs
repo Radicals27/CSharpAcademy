@@ -8,11 +8,11 @@ namespace CalculatorLibrary
 		JsonWriter writer;
 		string logFilePath = "calculatorlog.json";
 		string runCounter = "runCounter";
-		int runCount;
+		public int RunCount;
 
 		public Calculator()
 		{
-			runCount = GetRunCount();
+			RunCount = GetRunCount();
 
 			StreamWriter logFile = File.CreateText(logFilePath);  // Create the log file
 			logFile.AutoFlush = true;
@@ -21,7 +21,7 @@ namespace CalculatorLibrary
 			writer.WriteStartObject();
 
 			writer.WritePropertyName(runCounter);
-			writer.WriteValue(runCount);
+			writer.WriteValue(RunCount);
 
 			writer.WritePropertyName("Operations");
 			writer.WriteStartArray();

@@ -20,13 +20,14 @@ namespace CalculatorProgram
 				ShowMainMenu();
 			}
 
-			calculator.Finish();
+			//calculator.Finish();
 			return;
 		}
 
 		private static void ShowMainMenu()
 		{
 			Console.WriteLine("Console Calculator in C#\r");
+			Console.WriteLine($"This app has been run {calculator.RunCount} times.");
 			Console.WriteLine("------------------------\n");
 			Console.WriteLine("Welcome to the calculator, choose an option:");
 			Console.WriteLine("\t1. Do a calculation");
@@ -66,8 +67,7 @@ namespace CalculatorProgram
 
 		private static void ShowHistory()
 		{
-			// Go back through the latest 9 calculations
-			for (int i = calculationHistory.Count - 1; i >= 0; i--)
+			for (int i = 0; i < calculationHistory.Count; i++)
 			{
 				Console.WriteLine($"{i}. " +
 					$"{calculationHistory[i].num1} " +
@@ -76,7 +76,8 @@ namespace CalculatorProgram
 					$" {calculationHistory[i].finalResult} "
 					);
 
-				if (i <= calculationHistory.Count - 10)
+				// We only want 9 most recent entries
+				if (i > 9)
 				{
 					break;
 				}
@@ -89,13 +90,10 @@ namespace CalculatorProgram
 
 		private static void HandleHistorySelection(string calculationSelection)
 		{
-			Console.Clear();
-
 			if (calculationSelection.Length == 1 && char.IsDigit(calculationSelection[0]))
 			{
 				int userInput = int.Parse(calculationSelection);
-
-
+				DoCalculation(calculationHistory[userInput].num1.ToString(), calculationHistory[userInput].num2.ToString());
 			}
 		}
 
@@ -104,14 +102,20 @@ namespace CalculatorProgram
 			calculationHistory.Clear();
 		}
 
-		static void DoCalculation()
+		static void DoCalculation(string numInput1 =  "", string numInput2 = "")
 		{
-			string? numInput1 = "";
-			string? numInput2 = "";
 			double result = 0;
 
 			Console.Write("Type a number, and then press Enter: ");
-			numInput1 = Console.ReadLine();
+
+			if (string.IsNullOrEmpty(numInput1))
+			{
+				numInput1 = Console.ReadLine();
+			}
+			else
+			{
+				numInput1 = ReadLine(numInput1);
+			}
 
 			double cleanNum1 = 0;
 			while (!double.TryParse(numInput1, out cleanNum1))
@@ -120,8 +124,16 @@ namespace CalculatorProgram
 				numInput1 = Console.ReadLine();
 			}
 
-			Console.Write("Type another number, and then press Enter: ");
-			numInput2 = Console.ReadLine();
+			Console.Write("Type a number, and then press Enter: ");
+
+			if (string.IsNullOrEmpty(numInput2))
+			{
+				numInput2 = Console.ReadLine();
+			}
+			else
+			{
+				numInput2 = ReadLine(numInput2);
+			}
 
 			double cleanNum2 = 0;
 			while (!double.TryParse(numInput2, out cleanNum2))
@@ -150,7 +162,7 @@ namespace CalculatorProgram
 				{
 					result = calculator.DoOperation(cleanNum1, cleanNum2, op);
 					CalculationData calcData = new CalculationData(cleanNum1, cleanNum2, calculator.GetSymbolForCalculation(op), result);
-					calculationHistory.Add(calcData);
+					calculationHistory.Insert(0, calcData);
 
 					if (double.IsNaN(result))
 					{
@@ -167,6 +179,74 @@ namespace CalculatorProgram
 
 			Console.ReadLine();
 			Console.Clear();
+		}
+
+		// Allows for reading a console input with prefilled text
+		static string ReadLine(string prefill)
+		{
+			Console.Write(prefill);
+			string input = prefill;
+			int cursorPosition = prefill.Length;
+
+			while (true)
+			{
+				ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true); // Read key without displaying
+
+				if (keyInfo.Key == ConsoleKey.Enter)
+				{
+					Console.WriteLine(); // Move to the next line
+					return input; // Finish input
+				}
+				else if (keyInfo.Key == ConsoleKey.Backspace)
+				{
+					if (cursorPosition > 0)
+					{
+						input = input.Remove(cursorPosition - 1, 1);
+						cursorPosition--;
+
+						Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+						Console.Write(input.Substring(cursorPosition) + " "); // Rewrite everything after the cursor
+						Console.SetCursorPosition(Console.CursorLeft - input.Length + cursorPosition - 1, Console.CursorTop);
+					}
+				}
+				else if (keyInfo.Key == ConsoleKey.Delete)
+				{
+					if (cursorPosition < input.Length)
+					{
+						input = input.Remove(cursorPosition, 1);
+
+						Console.Write(input.Substring(cursorPosition) + " "); // Rewrite everything after the cursor
+						Console.SetCursorPosition(Console.CursorLeft - input.Length + cursorPosition, Console.CursorTop);
+					}
+				}
+				else if (keyInfo.Key == ConsoleKey.LeftArrow)
+				{
+					if (cursorPosition > 0)
+					{
+						cursorPosition--;
+						Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+					}
+				}
+				else if (keyInfo.Key == ConsoleKey.RightArrow)
+				{
+					if (cursorPosition < input.Length)
+					{
+						cursorPosition++;
+						Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
+					}
+				}
+				else
+				{
+					char newChar = keyInfo.KeyChar;
+					input = input.Insert(cursorPosition, newChar.ToString());
+					cursorPosition++;
+
+					Console.Write(input.Substring(cursorPosition - 1));
+					Console.SetCursorPosition(Console.CursorLeft - input.Length + cursorPosition, Console.CursorTop);
+				}
+			}
+
+			return input;
 		}
 
 		static void OnExit(object sender, EventArgs e)
