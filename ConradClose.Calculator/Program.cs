@@ -30,10 +30,11 @@ namespace CalculatorProgram
 			Console.WriteLine($"This app has been run {calculator.RunCount} times.");
 			Console.WriteLine("------------------------\n");
 			Console.WriteLine("Welcome to the calculator, choose an option:");
-			Console.WriteLine("\t1. Do a calculation");
-			Console.WriteLine("\t2. Show operation history");
-			Console.WriteLine("\t3. Delete operation history");
-			Console.WriteLine("\t4. Quit");
+			Console.WriteLine("\t1. Do a calculation with 2 numbers (Add, subtract, multiply or divide)");
+			Console.WriteLine("\t2. Do a calculation on 1 number (square, root or 10x)");
+			Console.WriteLine("\t3. Show operation history");
+			Console.WriteLine("\t4. Delete operation history");
+			Console.WriteLine("\t0. Quit");
 			Console.Write("Your option? ");
 
 			string? menuChoice = Console.ReadLine();
@@ -45,15 +46,18 @@ namespace CalculatorProgram
 				switch (userInput)
 				{
 					case 1:
-						DoCalculation();
+						DoCalculationForTwoNumbers();
 						break;
 					case 2:
-						ShowHistory();
+						DoCalculationForOneNumber();
 						break;
 					case 3:
-						DeleteHistory();
+						ShowCalculationHistory();
 						break;
 					case 4:
+						DeleteHistory();
+						break;
+					case 0:
 						endApp = true;
 						break;
 				}
@@ -65,16 +69,28 @@ namespace CalculatorProgram
 			}
 		}
 
-		private static void ShowHistory()
+		private static void ShowCalculationHistory()
 		{
 			for (int i = 0; i < calculationHistory.Count; i++)
 			{
-				Console.WriteLine($"{i}. " +
+
+				if (calculationHistory[i].num2.HasValue)
+				{
+					Console.WriteLine($"{i}. " +
 					$"{calculationHistory[i].num1} " +
 					$"{calculationHistory[i].operand} " +
 					$"{calculationHistory[i].num2} = " +
 					$" {calculationHistory[i].finalResult} "
 					);
+				}
+				else
+				{
+					Console.WriteLine($"{i}. " +
+					$"{calculationHistory[i].num1} " +
+					$"{calculationHistory[i].operand} " +
+					$" {calculationHistory[i].finalResult} "
+					);
+				}
 
 				// We only want 9 most recent entries
 				if (i > 9)
@@ -88,12 +104,21 @@ namespace CalculatorProgram
 			HandleHistorySelection(calculationSelection);
 		}
 
+		// Handles what happens when the user selects an entry from the calculation history
 		private static void HandleHistorySelection(string calculationSelection)
 		{
 			if (calculationSelection.Length == 1 && char.IsDigit(calculationSelection[0]))
 			{
 				int userInput = int.Parse(calculationSelection);
-				DoCalculation(calculationHistory[userInput].num1.ToString(), calculationHistory[userInput].num2.ToString());
+
+				if(calculationHistory[userInput].num2.HasValue)
+				{
+					DoCalculationForTwoNumbers(calculationHistory[userInput].num1.ToString(), calculationHistory[userInput].num2.ToString());
+				}
+				else
+				{
+					DoCalculationForOneNumber(calculationHistory[userInput].num1.ToString());
+				}
 			}
 		}
 
@@ -102,7 +127,68 @@ namespace CalculatorProgram
 			calculationHistory.Clear();
 		}
 
-		static void DoCalculation(string numInput1 =  "", string numInput2 = "")
+		// Calculation for square root, power and 10x
+		private static void DoCalculationForOneNumber(string numInput1 = "")
+		{
+			double result = 0;
+
+			Console.Write("Type a number, and then press Enter: ");
+
+			if (string.IsNullOrEmpty(numInput1))
+			{
+				numInput1 = Console.ReadLine();
+			}
+			else
+			{
+				numInput1 = ReadLine(numInput1);
+			}
+
+			double cleanNum1 = 0;
+			while (!double.TryParse(numInput1, out cleanNum1))
+			{
+				Console.Write("This is not valid input. Please enter an integer value: ");
+				numInput1 = Console.ReadLine();
+			}
+
+			Console.WriteLine("Choose an operator from the following list:");
+			Console.WriteLine("\tr - Square Root");
+			Console.WriteLine("\tp - Power");
+			Console.WriteLine("\tt - 10x");
+			Console.Write("Your option? ");
+
+			string? op = Console.ReadLine();
+
+			// Validate input is not null, and matches the pattern
+			if (op == null || !Regex.IsMatch(op, "[r|p|t]"))
+			{
+				Console.WriteLine("Error: Unrecognized input.");
+			}
+			else
+			{
+				try
+				{
+					result = calculator.DoOperationForOneNumber(cleanNum1, op);
+					CalculationData calcData = new CalculationData(cleanNum1, null, calculator.GetSymbolForCalculation(op), result);
+					calculationHistory.Insert(0, calcData);
+
+					if (double.IsNaN(result))
+					{
+						Console.WriteLine("This operation will result in a mathematical error.\n");
+					}
+					else Console.WriteLine("Your result: {0:0.##}\n", result);
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
+				}
+			}
+			Console.WriteLine("Press any key to return to the main menu.\n");
+
+			Console.ReadLine();
+			Console.Clear();
+		}
+
+		static void DoCalculationForTwoNumbers(string numInput1 =  "", string numInput2 = "")
 		{
 			double result = 0;
 
@@ -160,7 +246,7 @@ namespace CalculatorProgram
 			{
 				try
 				{
-					result = calculator.DoOperation(cleanNum1, cleanNum2, op);
+					result = calculator.DoOperationForTwoNumbers(cleanNum1, cleanNum2, op);
 					CalculationData calcData = new CalculationData(cleanNum1, cleanNum2, calculator.GetSymbolForCalculation(op), result);
 					calculationHistory.Insert(0, calcData);
 

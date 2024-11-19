@@ -63,12 +63,18 @@ namespace CalculatorLibrary
 					return "x";
 				case "d": 
 					return "/";
+				case "r":
+					return "√";
+				case "p":
+					return "^2";
+				case "t":
+					return "x10";
 				default: 
 					return "invalid calculation";
 			}
 		}
 
-		public double DoOperation(double num1, double num2, string op)
+		public double DoOperationForTwoNumbers(double num1, double num2, string op)
 		{
 			double result = double.NaN; // Default value is "not-a-number" if an operation, such as division, could result in an error.
 			writer.WriteStartObject();
@@ -119,14 +125,47 @@ namespace CalculatorLibrary
 			writer.Close();
 		}
 
+		public double DoOperationForOneNumber(double num1, string op)
+		{
+			double result = double.NaN; // Default value is "not-a-number" if an operation, such as division, could result in an error.
+			writer.WriteStartObject();
+			writer.WritePropertyName("Operand1");
+			writer.WriteValue(num1);
+			writer.WritePropertyName("Operation");
+
+			switch (op)
+			{
+				case "r":
+					result = MathF.Sqrt((float)num1);
+					writer.WriteValue("Square Root");
+					break;
+				case "p":
+					result = num1 * num1;
+					writer.WriteValue("Power");
+					break;
+				case "t":
+					result = num1 * 10;
+					writer.WriteValue("10x");
+					break;
+				default:
+					break;
+			}
+
+			writer.WritePropertyName("Result");
+			writer.WriteValue(result);
+			writer.WriteEndObject();
+
+			return result;
+		}
+
 		public struct CalculationData
 		{
 			public double num1;
-			public double num2;
+			public double? num2;
 			public double finalResult;
 			public string operand;
 
-			public CalculationData(double cleanNum1, double cleanNum2, string op, double result) : this()
+			public CalculationData(double cleanNum1, double? cleanNum2, string op, double result) : this()
 			{
 				num1 = cleanNum1;
 				num2 = cleanNum2;
