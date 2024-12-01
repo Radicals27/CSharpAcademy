@@ -17,9 +17,9 @@ namespace habit_tracker
                 connection.Open();
 
                 // Uncomment this code to delete the table (for debugging)
-                //var dropCmd = connection.CreateCommand();
-                //dropCmd.CommandText = "DROP TABLE IF EXISTS hours_played";
-                //dropCmd.ExecuteNonQuery();
+                // var dropCmd = connection.CreateCommand();
+                // dropCmd.CommandText = "DROP TABLE IF EXISTS hours_played";
+                // dropCmd.ExecuteNonQuery();
 
                 var tableCmd = connection.CreateCommand();
 
@@ -33,16 +33,56 @@ namespace habit_tracker
 
                 tableCmd.ExecuteNonQuery();
 
+                SeedDatabase(connection);
+
                 connection.Close();
             }
 
             GetUserInput();
         }
 
+        private static void SeedDatabase(SqliteConnection connection)
+        {
+            var random = new Random();
+            var insertCmd = connection.CreateCommand();
+            var numberOfRecords = 100;
+            var maxQuantity = 10;
+
+            for (int i = 0; i < numberOfRecords; i++)
+            {
+                string randomDate = GenerateRandomDate(random);
+                int randomQuantity = random.Next(1, maxQuantity); // Random quantity between 1 and 10
+                string randomUnit = GetRandomUnit(random);
+
+                insertCmd.CommandText =
+                    "INSERT INTO hours_played (Date, Quantity, Unit) VALUES (@date, @quantity, @unit)";
+                insertCmd.Parameters.Clear();
+                insertCmd.Parameters.AddWithValue("@date", randomDate);
+                insertCmd.Parameters.AddWithValue("@quantity", randomQuantity);
+                insertCmd.Parameters.AddWithValue("@unit", randomUnit);
+
+                insertCmd.ExecuteNonQuery();
+            }
+        }
+
+        private static string GenerateRandomDate(Random random)
+        {
+            DateTime startDate = DateTime.Now.AddYears(-1); // Start date: 1 year ago
+            int range = (DateTime.Now - startDate).Days;
+            return startDate.AddDays(random.Next(range)).ToString("dd-MM-yy");
+        }
+
+        private static string GetRandomUnit(Random random)
+        {
+            string[] units = { "seconds", "hours", "minutes", "sessions" };
+            return units[random.Next(units.Length)];
+        }
+
         static void GetUserInput()
         {
             Console.Clear();
             bool closeApp = false;
+
             while (closeApp == false)
             {
                 Console.WriteLine("Welcome to the game-tracking app");
@@ -52,6 +92,7 @@ namespace habit_tracker
                 Console.WriteLine("2. Insert a record");
                 Console.WriteLine("3. Delete a record");
                 Console.WriteLine("4. Update a record");
+                Console.WriteLine("5. Get report for a year");
                 Console.WriteLine("0. Exit");
                 Console.WriteLine("------------------------------------------\n");
 
@@ -75,6 +116,9 @@ namespace habit_tracker
                         break;
                     case "4":
                         Update();
+                        break;
+                    case "5":
+                        GetReportForAYear();
                         break;
                     default:
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
@@ -242,6 +286,72 @@ namespace habit_tracker
 
                 connection.Close();
             }
+        }
+
+        /// <summary>
+        /// Counts the number of times a habit was performed in a given year (YY)
+        /// </summary>
+        private static void GetReportForAYear()
+        {
+            int habitCount = 0;
+
+            Console.WriteLine($"\n\nWhich year would you like a report for? (YY format) : \n\n");
+
+            int yearInput = GetTwoDigitYearFromUser();
+
+            using (var connection = new SqliteConnection(connectionString))
+            {
+                connection.Open();
+
+                var reportCmd = connection.CreateCommand();
+                reportCmd.CommandText =
+                    @"SELECT COUNT(*) 
+                    FROM hours_played 
+                    WHERE substr(Date, 7, 2) = @year";  // Extracts the last 2 characters of the year
+
+                reportCmd.Parameters.AddWithValue("@year", (yearInput % 100).ToString("00"));  // Format as two digits
+
+                habitCount = Convert.ToInt32(reportCmd.ExecuteScalar());
+
+                connection.Close();
+            }
+
+            Console.WriteLine($"The habit was performed {habitCount} times in {yearInput}.");
+        }
+
+        private static int GetTwoDigitYearFromUser()
+        {
+            int year = 0;
+            bool validInput = false;
+
+            while (!validInput)
+            {
+                Console.WriteLine("Please enter a 2-digit year:");
+
+                string input = Console.ReadLine();
+
+                if (input.Length == 2 && input.All(char.IsDigit))
+                {
+                    year = Convert.ToInt32(input);
+
+                    if (year >= 0 && year <= 99)
+                    {
+                        validInput = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid 2-digit year (00-99).");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a 2-digit year.");
+                }
+            }
+
+            int fullYear = 2000 + year;
+
+            return fullYear;
         }
 
         internal static string GetDateInput()
