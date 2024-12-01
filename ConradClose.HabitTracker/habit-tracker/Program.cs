@@ -16,13 +16,19 @@ namespace habit_tracker
             {
                 connection.Open();
 
+                // Uncomment this code to delete the table (for debugging)
+                //var dropCmd = connection.CreateCommand();
+                //dropCmd.CommandText = "DROP TABLE IF EXISTS hours_played";
+                //dropCmd.ExecuteNonQuery();
+
                 var tableCmd = connection.CreateCommand();
 
                 tableCmd.CommandText =
                     @"CREATE TABLE IF NOT EXISTS hours_played (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
                         Date TEXT,
-                        Quantity INTEGER
+                        Quantity INTEGER,
+                        Unit TEXT
                         )";
 
                 tableCmd.ExecuteNonQuery();
@@ -100,7 +106,8 @@ namespace habit_tracker
                         {
                             Id = reader.GetInt32(0),
                             Date = DateTime.ParseExact(reader.GetString(1), "dd-MM-yy", new CultureInfo("en-US")),
-                            Quantity = reader.GetInt32(2)
+                            Quantity = reader.GetInt32(2),
+                            Unit = reader.GetString(3)
                         }); ;
                     }
                 }
@@ -114,7 +121,7 @@ namespace habit_tracker
                 Console.WriteLine("------------------------------------------\n");
                 foreach (var dw in tableData)
                 {
-                    Console.WriteLine($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - Quantity: {dw.Quantity}");
+                    Console.WriteLine($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - Quantity: {dw.Quantity} {dw.Unit}");
                 }
                 Console.WriteLine("------------------------------------------\n");
             }
@@ -124,7 +131,8 @@ namespace habit_tracker
         {
             string date = GetDateInput();
 
-            int quantity = GetNumberInput("\n\nPlease insert number of hours of games played this session:)\n\n");
+            int quantity = GetNumberInput("\n\nPlease insert quantity: (then we will ask you the units of measure.))\n\n");
+            string unit = GetStringInput("\n\nPlease insert the unit of measure: )\n\n");
 
             using (var connection = new SqliteConnection(connectionString))
             {
@@ -133,15 +141,33 @@ namespace habit_tracker
 
                 // Parameterized query
                 tableCmd.CommandText =
-                    "INSERT INTO hours_played (Date, Quantity) VALUES (@date, @quantity)";
+                    "INSERT INTO hours_played (Date, Quantity, Unit) VALUES (@date, @quantity, @unit)";
 
                 tableCmd.Parameters.AddWithValue("@date", date);
                 tableCmd.Parameters.AddWithValue("@quantity", quantity);
+                tableCmd.Parameters.AddWithValue("@unit", unit);
 
                 tableCmd.ExecuteNonQuery();
 
                 connection.Close();
             }
+        }
+
+        private static string GetStringInput(string message)
+        {
+            Console.WriteLine(message);
+
+            string stringInput = Console.ReadLine();
+
+            if (stringInput == "0") GetUserInput();
+
+            while (stringInput == null)
+            {
+                Console.WriteLine("\n\nInvalid input, please try again:");
+                stringInput = Console.ReadLine();
+            }
+
+            return stringInput;
         }
 
         private static void Delete()
@@ -202,12 +228,14 @@ namespace habit_tracker
 
                 string date = GetDateInput();
                 int quantity = GetNumberInput("\n\nPlease insert number of hours of games played this session:\n\n");
+                string unit = GetStringInput("\n\nPlease insert the unit of measure: )\n\n");
 
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = "UPDATE hours_played SET Date = @date, Quantity = @quantity WHERE Id = @recordId";
+                tableCmd.CommandText = "UPDATE hours_played SET Date = @date, Quantity = @quantity, Unit = @unit WHERE Id = @recordId";
 
                 tableCmd.Parameters.AddWithValue("@date", date);
                 tableCmd.Parameters.AddWithValue("@quantity", quantity);
+                tableCmd.Parameters.AddWithValue("@unit", unit);
                 tableCmd.Parameters.AddWithValue("@recordId", recordId);
 
                 tableCmd.ExecuteNonQuery();
@@ -258,5 +286,6 @@ namespace habit_tracker
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public int Quantity { get; set; }
+        public string Unit { get; set; }
     }
 }
