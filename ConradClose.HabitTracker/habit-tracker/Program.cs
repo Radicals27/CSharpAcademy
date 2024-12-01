@@ -15,6 +15,7 @@ namespace habit_tracker
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Open();
+
                 var tableCmd = connection.CreateCommand();
 
                 tableCmd.CommandText =
@@ -129,8 +130,13 @@ namespace habit_tracker
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
+
+                // Parameterized query
                 tableCmd.CommandText =
-                   $"INSERT INTO hours_played(date, quantity) VALUES('{date}', {quantity})";
+                    "INSERT INTO hours_played (Date, Quantity) VALUES (@date, @quantity)";
+
+                tableCmd.Parameters.AddWithValue("@date", date);
+                tableCmd.Parameters.AddWithValue("@quantity", quantity);
 
                 tableCmd.ExecuteNonQuery();
 
@@ -150,7 +156,10 @@ namespace habit_tracker
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
 
-                tableCmd.CommandText = $"DELETE from hours_played WHERE Id = '{recordId}'";
+                // Parameterized query
+                tableCmd.CommandText = "DELETE FROM hours_played WHERE Id = @recordId";
+
+                tableCmd.Parameters.AddWithValue("@recordId", recordId);
 
                 int rowCount = tableCmd.ExecuteNonQuery();
 
@@ -176,8 +185,11 @@ namespace habit_tracker
             {
                 connection.Open();
 
+                // Check if the record exists
                 var checkCmd = connection.CreateCommand();
-                checkCmd.CommandText = $"SELECT EXISTS(SELECT 1 FROM hours_played WHERE Id = {recordId})";
+                checkCmd.CommandText = "SELECT EXISTS(SELECT 1 FROM hours_played WHERE Id = @recordId)";
+                checkCmd.Parameters.AddWithValue("@recordId", recordId);
+
                 int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
 
                 if (checkQuery == 0)
@@ -185,14 +197,18 @@ namespace habit_tracker
                     Console.WriteLine($"\n\nRecord with Id {recordId} doesn't exist.\n\n");
                     connection.Close();
                     Update();
+                    return;
                 }
 
                 string date = GetDateInput();
-
                 int quantity = GetNumberInput("\n\nPlease insert number of hours of games played this session:\n\n");
 
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = $"UPDATE hours_played SET date = '{date}', quantity = {quantity} WHERE Id = {recordId}";
+                tableCmd.CommandText = "UPDATE hours_played SET Date = @date, Quantity = @quantity WHERE Id = @recordId";
+
+                tableCmd.Parameters.AddWithValue("@date", date);
+                tableCmd.Parameters.AddWithValue("@quantity", quantity);
+                tableCmd.Parameters.AddWithValue("@recordId", recordId);
 
                 tableCmd.ExecuteNonQuery();
 
