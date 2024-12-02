@@ -7,62 +7,13 @@ namespace coding_tracker
     /// </summary>
     class UserInput
     {
-        public static void ShowMainMenu()
-        {
-            Console.Clear();
-            bool closeApp = false;
-
-            while (closeApp == false)
-            {
-                Console.WriteLine("Welcome to the game-tracking app");
-                Console.WriteLine("\n\nMAIN MENU");
-                Console.WriteLine("\nWhat would you like to do?");
-                Console.WriteLine("\n1. View all records");
-                Console.WriteLine("2. Insert a record");
-                Console.WriteLine("3. Delete a record");
-                Console.WriteLine("4. Update a record");
-                Console.WriteLine("5. Get report for a year");
-                Console.WriteLine("0. Exit");
-                Console.WriteLine("------------------------------------------\n");
-
-                string command = Console.ReadLine();
-
-                switch (command)
-                {
-                    case "0":
-                        Console.WriteLine("\nGoodbye!\n");
-                        closeApp = true;
-                        Environment.Exit(0);
-                        break;
-                    case "1":
-                        DBController.GetAllRecords();
-                        break;
-                    case "2":
-                        DBController.Insert();
-                        break;
-                    case "3":
-                        DBController.Delete();
-                        break;
-                    case "4":
-                        DBController.Update();
-                        break;
-                    case "5":
-                        DBController.GetReportForAYear();
-                        break;
-                    default:
-                        Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
-                        break;
-                }
-            }
-        }
-
-        public static string GetStringInput(string message)
+        public static string? GetStringInput(string message)
         {
             Console.WriteLine(message);
 
-            string stringInput = Console.ReadLine();
+            string? stringInput = Console.ReadLine();
 
-            if (stringInput == "0") ShowMainMenu();
+            if (stringInput == "0") return null;
 
             while (stringInput == null)
             {
@@ -82,7 +33,12 @@ namespace coding_tracker
             {
                 Console.WriteLine("Please enter a 2-digit year:");
 
-                string input = Console.ReadLine();
+                string? input = Console.ReadLine();
+
+                if (input == null)
+                {
+                    continue;
+                }
 
                 if (input.Length == 2 && input.All(char.IsDigit))
                 {
@@ -108,13 +64,13 @@ namespace coding_tracker
             return fullYear;
         }
 
-        public static string GetDateInput()
+        public static string? GetDateInput()
         {
             Console.WriteLine("\n\nPlease insert the date: (Format: dd-mm-yy). Type 0 to return to main manu.\n\n");
 
-            string dateInput = Console.ReadLine();
+            string? dateInput = Console.ReadLine();
 
-            if (dateInput == "0") ShowMainMenu();
+            if (dateInput == "0") return null;
 
             while (!DateTime.TryParseExact(dateInput, "dd-MM-yy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
             {
@@ -125,13 +81,13 @@ namespace coding_tracker
             return dateInput;
         }
 
-        public static int GetNumberInput(string message)
+        public static int? GetNumberInput(string message)
         {
             Console.WriteLine(message);
 
-            string numberInput = Console.ReadLine();
+            string? numberInput = Console.ReadLine();
 
-            if (numberInput == "0") ShowMainMenu();
+            if (numberInput == "0") return null;
 
             while (!Int32.TryParse(numberInput, out _) || Convert.ToInt32(numberInput) < 0)
             {

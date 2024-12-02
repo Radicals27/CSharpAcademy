@@ -109,10 +109,10 @@ namespace coding_tracker
 
         public static void Insert()
         {
-            string date = UserInput.GetDateInput();
+            string? date = UserInput.GetDateInput();
 
-            int quantity = UserInput.GetNumberInput("\n\nPlease insert quantity: (then we will ask you the units of measure.))\n\n");
-            string unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: )\n\n");
+            int? quantity = UserInput.GetNumberInput("\n\nPlease insert quantity: (then we will ask you the units of measure.))\n\n");
+            string? unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: )\n\n");
 
             using (var connection = new SqliteConnection(connectionString))
             {
@@ -160,8 +160,6 @@ namespace coding_tracker
             }
 
             Console.WriteLine($"\n\nRecord with Id {recordId} was deleted. \n\n");
-
-            UserInput.ShowMainMenu();
         }
 
         public static void Update()
@@ -189,9 +187,9 @@ namespace coding_tracker
                     return;
                 }
 
-                string date = UserInput.GetDateInput();
-                int quantity = UserInput.GetNumberInput("\n\nPlease insert number of hours of games played this session:\n\n");
-                string unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: )\n\n");
+                string? date = UserInput.GetDateInput();
+                int? quantity = UserInput.GetNumberInput("\n\nPlease insert number of hours of games played this session:\n\n");
+                string? unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: )\n\n");
 
                 var tableCmd = connection.CreateCommand();
                 tableCmd.CommandText = "UPDATE hours_played SET Date = @date, Quantity = @quantity, Unit = @unit WHERE Id = @recordId";
@@ -254,9 +252,9 @@ namespace coding_tracker
 
     public class HoursPlayed
     {
-        public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public int Quantity { get; set; }
-        public string? Unit { get; set; }
+        public required int Id { get; set; }
+        public required DateTime Date { get; set; }
+        public required int Quantity { get; set; }
+        public required string Unit { get; set; }
     }
 }
