@@ -1,3 +1,4 @@
+using System.Configuration;
 using System.Globalization;
 using Microsoft.Data.Sqlite;
 
@@ -8,11 +9,13 @@ namespace coding_tracker
     /// </summary>
     class DBController
     {
-        static string connectionString = @"Data Source=coding-tracker.db";
+        static string connectionString = @ConfigurationManager.AppSettings.Get("ConnectionString");
+        static string databasePath = @ConfigurationManager.AppSettings.Get("DatabasePath");
+        static string completeConnectionString = connectionString + databasePath;
 
-        public static void InitialiseDB()
+        internal static void InitialiseDB()
         {
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
 
@@ -33,13 +36,13 @@ namespace coding_tracker
 
                 tableCmd.ExecuteNonQuery();
 
-                DBController.SeedDatabase(connection);
+                SeedDatabase(connection);
 
                 connection.Close();
             }
         }
 
-        public static void SeedDatabase(SqliteConnection connection)
+        internal static void SeedDatabase(SqliteConnection connection)
         {
             var random = new Random();
             var insertCmd = connection.CreateCommand();
@@ -63,17 +66,17 @@ namespace coding_tracker
             }
         }
 
-        public static void GetAllRecords()
+        internal static List<CodingSession> GetAllRecords()
         {
             Console.Clear();
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
                 tableCmd.CommandText =
                     $"SELECT * FROM hours_played ";
 
-                List<HoursPlayed> tableData = new();
+                List<CodingSession> tableData = new();
 
                 SqliteDataReader reader = tableCmd.ExecuteReader();
 
@@ -82,7 +85,7 @@ namespace coding_tracker
                     while (reader.Read())
                     {
                         tableData.Add(
-                        new HoursPlayed
+                        new CodingSession
                         {
                             Id = reader.GetInt32(0),
                             Date = DateTime.ParseExact(reader.GetString(1), "dd-MM-yy", new CultureInfo("en-US")),
@@ -98,23 +101,18 @@ namespace coding_tracker
 
                 connection.Close();
 
-                Console.WriteLine("------------------------------------------\n");
-                foreach (var dw in tableData)
-                {
-                    Console.WriteLine($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - Quantity: {dw.Quantity} {dw.Unit}");
-                }
-                Console.WriteLine("------------------------------------------\n");
+                return tableData;
             }
         }
 
-        public static void Insert()
+        internal static void Insert()
         {
             string? date = UserInput.GetDateInput();
 
-            int? quantity = UserInput.GetNumberInput("\n\nPlease insert quantity: (then we will ask you the units of measure.))\n\n");
-            string? unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: )\n\n");
+            int? quantity = UserInput.GetNumberInput("\n\nPlease insert quantity: (then we will ask you the units of measure.)\n\n");
+            string? unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: \n\n");
 
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -133,14 +131,14 @@ namespace coding_tracker
             }
         }
 
-        public static void Delete()
+        internal static void Delete()
         {
             Console.Clear();
             GetAllRecords();
 
             var recordId = UserInput.GetNumberInput("\n\nPlease type the Id of the record you want to delete or type 0 to go back to Main Menu\n\n");
 
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
                 var tableCmd = connection.CreateCommand();
@@ -162,13 +160,13 @@ namespace coding_tracker
             Console.WriteLine($"\n\nRecord with Id {recordId} was deleted. \n\n");
         }
 
-        public static void Update()
+        internal static void Update()
         {
             GetAllRecords();
 
             var recordId = UserInput.GetNumberInput("\n\nPlease type Id of the record would like to update. Type 0 to return to main manu.\n\n");
 
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
 
@@ -189,7 +187,7 @@ namespace coding_tracker
 
                 string? date = UserInput.GetDateInput();
                 int? quantity = UserInput.GetNumberInput("\n\nPlease insert number of hours of games played this session:\n\n");
-                string? unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: )\n\n");
+                string? unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: \n\n");
 
                 var tableCmd = connection.CreateCommand();
                 tableCmd.CommandText = "UPDATE hours_played SET Date = @date, Quantity = @quantity, Unit = @unit WHERE Id = @recordId";
@@ -208,7 +206,7 @@ namespace coding_tracker
         /// <summary>
         /// Counts the number of times a session was performed in a given year (YY)
         /// </summary>
-        public static void GetReportForAYear()
+        internal static void GetReportForAYear()
         {
             int codingSessionCount = 0;
 
@@ -216,7 +214,7 @@ namespace coding_tracker
 
             int yearInput = UserInput.GetTwoDigitYearFromUser();
 
-            using (var connection = new SqliteConnection(connectionString))
+            using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
 
@@ -248,13 +246,5 @@ namespace coding_tracker
             string[] units = { "seconds", "hours", "minutes", "sessions" };
             return units[random.Next(units.Length)];
         }
-    }
-
-    public class HoursPlayed
-    {
-        public required int Id { get; set; }
-        public required DateTime Date { get; set; }
-        public required int Quantity { get; set; }
-        public required string Unit { get; set; }
     }
 }

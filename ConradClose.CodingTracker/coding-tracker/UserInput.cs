@@ -7,7 +7,7 @@ namespace coding_tracker
     /// </summary>
     class UserInput
     {
-        public static string? GetStringInput(string message)
+        internal static string? GetStringInput(string message)
         {
             Console.WriteLine(message);
 
@@ -24,7 +24,7 @@ namespace coding_tracker
             return stringInput;
         }
 
-        public static int GetTwoDigitYearFromUser()
+        internal static int GetTwoDigitYearFromUser()
         {
             int year = 0;
             bool validInput = false;
@@ -59,12 +59,22 @@ namespace coding_tracker
                 }
             }
 
-            int fullYear = 2000 + year;
+            int fullYear;
+            int currentYear = DateTime.Now.Year % 100;
 
+            if (year > currentYear)
+            {
+                // If the year is "25" when the current year is actually 2024, it must be 1925
+                fullYear = 1900 + year;
+            }
+            else
+            {
+                fullYear = 2000 + year;
+            }
             return fullYear;
         }
 
-        public static string? GetDateInput()
+        internal static string? GetDateInput()
         {
             Console.WriteLine("\n\nPlease insert the date: (Format: dd-mm-yy). Type 0 to return to main manu.\n\n");
 
@@ -81,7 +91,7 @@ namespace coding_tracker
             return dateInput;
         }
 
-        public static int? GetNumberInput(string message)
+        internal static int? GetNumberInput(string message)
         {
             Console.WriteLine(message);
 

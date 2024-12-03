@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("coding-tracker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6433232adf13dd3a2f80c0a9b38961bed1f99383")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02d1dd05b46ea1905738b118a201e7d110dbc8b0")]
 [assembly: System.Reflection.AssemblyProductAttribute("coding-tracker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("coding-tracker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
