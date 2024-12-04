@@ -1,6 +1,7 @@
 using System.Configuration;
 using System.Globalization;
 using Microsoft.Data.Sqlite;
+using Dapper;
 
 namespace coding_tracker
 {
@@ -29,14 +30,14 @@ namespace coding_tracker
                 tableCmd.CommandText =
                     @"CREATE TABLE IF NOT EXISTS hours_played (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                        Date TEXT,
+                        Date DATE,
                         StartTime INTEGER,
                         EndTime INTEGER
                         )";
 
                 tableCmd.ExecuteNonQuery();
 
-                SeedDatabase(connection);
+                //SeedDatabase(connection);   // Only run initially
 
                 connection.Close();
             }
@@ -56,6 +57,7 @@ namespace coding_tracker
             for (int i = 0; i < numberOfRecords; i++)
             {
                 string randomDate = GenerateRandomDate(random);
+                DateTime parsedDate = DateTime.ParseExact(randomDate, "dd-MM-yy", CultureInfo.InvariantCulture);
 
                 int randomStartHour = random.Next(minStartTime, maxStartTime);
                 int randomStartMinute = random.Next(0, maxMinutes);
@@ -67,53 +69,33 @@ namespace coding_tracker
                 int formattedStartTime = int.Parse(startTime.ToString("HHmm"));
                 int formattedEndTime = int.Parse(endTime.ToString("HHmm"));
 
-                insertCmd.CommandText =
-                    "INSERT INTO hours_played (Date, StartTime, EndTime) VALUES (@date, @startTime, @endTime)";
-                insertCmd.Parameters.Clear();
-                insertCmd.Parameters.AddWithValue("@date", randomDate);
-                insertCmd.Parameters.AddWithValue("@startTime", formattedStartTime);
-                insertCmd.Parameters.AddWithValue("@endTime", formattedEndTime);
-
-                insertCmd.ExecuteNonQuery();
+                // Dapper insertion
+                string sql = "INSERT INTO hours_played (Date, StartTime, EndTime) VALUES (@Date, @StartTime, @EndTime)";
+                connection.Execute(sql, new
+                {
+                    Date = parsedDate,
+                    StartTime = formattedStartTime,
+                    EndTime = formattedEndTime
+                });
             }
         }
 
         internal static List<CodingSession> GetAllRecords()
         {
             Console.Clear();
+            List<CodingSession> allRecords = new List<CodingSession>();
+
             using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
-                var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText =
-                    $"SELECT * FROM hours_played ";
 
-                List<CodingSession> tableData = new();
+                string query = "SELECT * FROM hours_played";
 
-                SqliteDataReader reader = tableCmd.ExecuteReader();
-
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        tableData.Add(
-                        new CodingSession
-                        {
-                            Id = reader.GetInt32(0),
-                            Date = DateTime.ParseExact(reader.GetString(1), "dd-MM-yy", new CultureInfo("en-US")),
-                            StartTime = reader.GetInt32(2),
-                            EndTime = reader.GetInt32(3)
-                        }); ;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("No rows found");
-                }
+                allRecords = connection.Query<CodingSession>(query).ToList();
 
                 connection.Close();
 
-                return tableData;
+                return allRecords;
             }
         }
 
@@ -127,17 +109,16 @@ namespace coding_tracker
             using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
-                var tableCmd = connection.CreateCommand();
 
-                // Parameterized query
-                tableCmd.CommandText =
-                    "INSERT INTO hours_played (Date, StartTime, EndTime) VALUES (@date, @startTime, @endTime)";
+                string sql = "INSERT INTO hours_played (Date, StartTime, EndTime) VALUES (@Date, @StartTime, @EndTime)";
 
-                tableCmd.Parameters.AddWithValue("@date", date);
-                tableCmd.Parameters.AddWithValue("@startTime", startTime);
-                tableCmd.Parameters.AddWithValue("@endTime", endTime);
-
-                tableCmd.ExecuteNonQuery();
+                // Dapper
+                connection.Execute(sql, new
+                {
+                    Date = date,
+                    StartTime = startTime,
+                    EndTime = endTime
+                });
 
                 connection.Close();
             }
@@ -153,14 +134,11 @@ namespace coding_tracker
             using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
-                var tableCmd = connection.CreateCommand();
 
-                // Parameterized query
-                tableCmd.CommandText = "DELETE FROM hours_played WHERE Id = @recordId";
+                string sql = "DELETE FROM hours_played WHERE Id = @RecordId";
 
-                tableCmd.Parameters.AddWithValue("@recordId", recordId);
-
-                int rowCount = tableCmd.ExecuteNonQuery();
+                // Use Dapper
+                int rowCount = connection.Execute(sql, new { RecordId = recordId });
 
                 if (rowCount == 0)
                 {
@@ -182,18 +160,13 @@ namespace coding_tracker
             {
                 connection.Open();
 
-                // Check if the record exists
-                var checkCmd = connection.CreateCommand();
-                checkCmd.CommandText = "SELECT EXISTS(SELECT 1 FROM hours_played WHERE Id = @recordId)";
-                checkCmd.Parameters.AddWithValue("@recordId", recordId);
+                string checkQuery = "SELECT COUNT(1) FROM hours_played WHERE Id = @RecordId";
+                int checkQueryResult = connection.ExecuteScalar<int>(checkQuery, new { RecordId = recordId });
 
-                int checkQuery = Convert.ToInt32(checkCmd.ExecuteScalar());
-
-                if (checkQuery == 0)
+                if (checkQueryResult == 0)
                 {
                     Console.WriteLine($"\n\nRecord with Id {recordId} doesn't exist.\n\n");
-                    connection.Close();
-                    Update();
+                    Update(); // If the record doesn't exist, call Update again (or handle accordingly)
                     return;
                 }
 
@@ -201,15 +174,25 @@ namespace coding_tracker
                 int? startTime = UserInput.GetNumberInput("\n\nWhat time did you start the session? (24hr time, i.e '1300' for 1:00pm):\n");
                 int? endTime = UserInput.GetNumberInput("\n\nWhat time did you end the session? (24hr time):\n");
 
-                var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = "UPDATE hours_played SET Date = @date, StartTime = @startTime, EndTime = @endTime WHERE Id = @recordId";
+                string updateQuery = "UPDATE hours_played SET Date = @Date, StartTime = @StartTime, EndTime = @EndTime WHERE Id = @RecordId";
 
-                tableCmd.Parameters.AddWithValue("@date", date);
-                tableCmd.Parameters.AddWithValue("@startTime", startTime);
-                tableCmd.Parameters.AddWithValue("@endTime", endTime);
-                tableCmd.Parameters.AddWithValue("@recordId", recordId);
+                // Use Dapper
+                int affectedRows = connection.Execute(updateQuery, new
+                {
+                    Date = date,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    RecordId = recordId
+                });
 
-                tableCmd.ExecuteNonQuery();
+                if (affectedRows > 0)
+                {
+                    Console.WriteLine("Record updated successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to update the record.");
+                }
 
                 connection.Close();
             }

@@ -30,7 +30,10 @@ namespace coding_tracker
 
             foreach (var dw in _tableData)
             {
-                table.AddRow($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - S: {dw.StartTime}, E: {dw.EndTime}, Duration: {dw.Duration} minutes");
+                string formattedStartTime = dw.StartTime.ToString("D4");  // Format to 4 digits with leading zero
+                string formattedEndTime = dw.EndTime.ToString("D4");
+
+                table.AddRow($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - S: {formattedStartTime}, E: {formattedEndTime}, Duration: {dw.Duration} minutes");
             }
 
             AnsiConsole.Write(table);

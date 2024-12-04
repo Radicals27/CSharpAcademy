@@ -50,3 +50,4 @@ d:\Projects\CSharpAcademy\ConradClose.CodingTracker\coding-tracker\bin\Debug\net
 d:\Projects\CSharpAcademy\ConradClose.CodingTracker\coding-tracker\bin\Debug\net9.0\System.Security.Cryptography.ProtectedData.dll
 d:\Projects\CSharpAcademy\ConradClose.CodingTracker\coding-tracker\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.Diagnostics.EventLog.Messages.dll
 d:\Projects\CSharpAcademy\ConradClose.CodingTracker\coding-tracker\bin\Debug\net9.0\runtimes\win\lib\net9.0\System.Diagnostics.EventLog.dll
+d:\Projects\CSharpAcademy\ConradClose.CodingTracker\coding-tracker\bin\Debug\net9.0\Dapper.dll

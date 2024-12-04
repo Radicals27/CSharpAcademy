@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "EFkOCbi9u8Q=",
+  "dgSpecHash": "blSGgHf9IUM=",
   "success": true,
   "projectFilePath": "d:\\Projects\\CSharpAcademy\\ConradClose.CodingTracker\\coding-tracker\\coding-tracker.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Radicals\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\Radicals\\.nuget\\packages\\microsoft.data.sqlite\\8.0.0\\microsoft.data.sqlite.8.0.0.nupkg.sha512",
     "C:\\Users\\Radicals\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.0\\microsoft.data.sqlite.core.8.0.0.nupkg.sha512",
     "C:\\Users\\Radicals\\.nuget\\packages\\spectre.console\\0.49.1\\spectre.console.0.49.1.nupkg.sha512",

@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v9.0": {
       "coding-tracker/1.0.0": {
         "dependencies": {
+          "Dapper": "2.1.35",
           "Microsoft.Data.Sqlite": "8.0.0",
           "Spectre.Console": "0.49.1",
           "Spectre.Console.Cli": "0.49.1",
@@ -15,6 +16,14 @@
         },
         "runtime": {
           "coding-tracker.dll": {}
+        }
+      },
+      "Dapper/2.1.35": {
+        "runtime": {
+          "lib/net7.0/Dapper.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.1.35.13827"
+          }
         }
       },
       "Microsoft.Data.Sqlite/8.0.0": {
@@ -252,6 +261,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Dapper/2.1.35": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YKRwjVfrG7GYOovlGyQoMvr1/IJdn+7QzNXJxyMh0YfFF5yvDmTYaJOVYWsckreNjGsGSEtrMTpnzxTUq/tZQw==",
+      "path": "dapper/2.1.35",
+      "hashPath": "dapper.2.1.35.nupkg.sha512"
     },
     "Microsoft.Data.Sqlite/8.0.0": {
       "type": "package",
