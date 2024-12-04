@@ -30,7 +30,7 @@ namespace coding_tracker
 
             foreach (var dw in _tableData)
             {
-                table.AddRow($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - Quantity: {dw.Quantity} {dw.Unit}");
+                table.AddRow($"{dw.Id} - {dw.Date.ToString("dd-MMM-yyyy")} - S: {dw.StartTime}, E: {dw.EndTime}, Duration: {dw.Duration} minutes");
             }
 
             AnsiConsole.Write(table);

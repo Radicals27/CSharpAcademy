@@ -30,8 +30,8 @@ namespace coding_tracker
                     @"CREATE TABLE IF NOT EXISTS hours_played (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
                         Date TEXT,
-                        Quantity INTEGER,
-                        Unit TEXT
+                        StartTime INTEGER,
+                        EndTime INTEGER
                         )";
 
                 tableCmd.ExecuteNonQuery();
@@ -47,20 +47,32 @@ namespace coding_tracker
             var random = new Random();
             var insertCmd = connection.CreateCommand();
             var numberOfRecords = 100;
-            var maxQuantity = 10;
+            var maxMinutes = 59;
+            var minStartTime = 6;   // 06:00
+            var maxStartTime = 13;  // 13:00
+            var minDuration = 20;  // Minutes
+            var maxDuration = 150;  // Minutes
 
             for (int i = 0; i < numberOfRecords; i++)
             {
                 string randomDate = GenerateRandomDate(random);
-                int randomQuantity = random.Next(1, maxQuantity); // Random quantity between 1 and 10
-                string randomUnit = GetRandomUnit(random);
+
+                int randomStartHour = random.Next(minStartTime, maxStartTime);
+                int randomStartMinute = random.Next(0, maxMinutes);
+                DateTime startTime = new DateTime(1, 1, 1, randomStartHour, randomStartMinute, 0);
+                int randomDurationMinutes = random.Next(minDuration, maxDuration);
+
+                DateTime endTime = startTime.AddMinutes(randomDurationMinutes);
+
+                int formattedStartTime = int.Parse(startTime.ToString("HHmm"));
+                int formattedEndTime = int.Parse(endTime.ToString("HHmm"));
 
                 insertCmd.CommandText =
-                    "INSERT INTO hours_played (Date, Quantity, Unit) VALUES (@date, @quantity, @unit)";
+                    "INSERT INTO hours_played (Date, StartTime, EndTime) VALUES (@date, @startTime, @endTime)";
                 insertCmd.Parameters.Clear();
                 insertCmd.Parameters.AddWithValue("@date", randomDate);
-                insertCmd.Parameters.AddWithValue("@quantity", randomQuantity);
-                insertCmd.Parameters.AddWithValue("@unit", randomUnit);
+                insertCmd.Parameters.AddWithValue("@startTime", formattedStartTime);
+                insertCmd.Parameters.AddWithValue("@endTime", formattedEndTime);
 
                 insertCmd.ExecuteNonQuery();
             }
@@ -89,8 +101,8 @@ namespace coding_tracker
                         {
                             Id = reader.GetInt32(0),
                             Date = DateTime.ParseExact(reader.GetString(1), "dd-MM-yy", new CultureInfo("en-US")),
-                            Quantity = reader.GetInt32(2),
-                            Unit = reader.GetString(3)
+                            StartTime = reader.GetInt32(2),
+                            EndTime = reader.GetInt32(3)
                         }); ;
                     }
                 }
@@ -109,8 +121,8 @@ namespace coding_tracker
         {
             string? date = UserInput.GetDateInput();
 
-            int? quantity = UserInput.GetNumberInput("\n\nPlease insert quantity: (then we will ask you the units of measure.)\n\n");
-            string? unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: \n\n");
+            int? startTime = UserInput.GetNumberInput("\n\nWhat time did you start the session? (24hr time, i.e '1300' for 1:00pm):\n");
+            int? endTime = UserInput.GetNumberInput("\n\nWhat time did you end the session? (24hr time):\n");
 
             using (var connection = new SqliteConnection(completeConnectionString))
             {
@@ -119,11 +131,11 @@ namespace coding_tracker
 
                 // Parameterized query
                 tableCmd.CommandText =
-                    "INSERT INTO hours_played (Date, Quantity, Unit) VALUES (@date, @quantity, @unit)";
+                    "INSERT INTO hours_played (Date, StartTime, EndTime) VALUES (@date, @startTime, @endTime)";
 
                 tableCmd.Parameters.AddWithValue("@date", date);
-                tableCmd.Parameters.AddWithValue("@quantity", quantity);
-                tableCmd.Parameters.AddWithValue("@unit", unit);
+                tableCmd.Parameters.AddWithValue("@startTime", startTime);
+                tableCmd.Parameters.AddWithValue("@endTime", endTime);
 
                 tableCmd.ExecuteNonQuery();
 
@@ -186,15 +198,15 @@ namespace coding_tracker
                 }
 
                 string? date = UserInput.GetDateInput();
-                int? quantity = UserInput.GetNumberInput("\n\nPlease insert number of hours of games played this session:\n\n");
-                string? unit = UserInput.GetStringInput("\n\nPlease insert the unit of measure: \n\n");
+                int? startTime = UserInput.GetNumberInput("\n\nWhat time did you start the session? (24hr time, i.e '1300' for 1:00pm):\n");
+                int? endTime = UserInput.GetNumberInput("\n\nWhat time did you end the session? (24hr time):\n");
 
                 var tableCmd = connection.CreateCommand();
-                tableCmd.CommandText = "UPDATE hours_played SET Date = @date, Quantity = @quantity, Unit = @unit WHERE Id = @recordId";
+                tableCmd.CommandText = "UPDATE hours_played SET Date = @date, StartTime = @startTime, EndTime = @endTime WHERE Id = @recordId";
 
                 tableCmd.Parameters.AddWithValue("@date", date);
-                tableCmd.Parameters.AddWithValue("@quantity", quantity);
-                tableCmd.Parameters.AddWithValue("@unit", unit);
+                tableCmd.Parameters.AddWithValue("@startTime", startTime);
+                tableCmd.Parameters.AddWithValue("@endTime", endTime);
                 tableCmd.Parameters.AddWithValue("@recordId", recordId);
 
                 tableCmd.ExecuteNonQuery();
@@ -239,12 +251,6 @@ namespace coding_tracker
             DateTime startDate = DateTime.Now.AddYears(-1); // Start date: 1 year ago
             int range = (DateTime.Now - startDate).Days;
             return startDate.AddDays(random.Next(range)).ToString("dd-MM-yy");
-        }
-
-        private static string GetRandomUnit(Random random)
-        {
-            string[] units = { "seconds", "hours", "minutes", "sessions" };
-            return units[random.Next(units.Length)];
         }
     }
 }
