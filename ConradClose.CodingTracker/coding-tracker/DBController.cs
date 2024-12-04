@@ -83,15 +83,14 @@ namespace coding_tracker
         internal static List<CodingSession> GetAllRecords()
         {
             Console.Clear();
-            List<CodingSession> allRecords = new List<CodingSession>();
 
             using (var connection = new SqliteConnection(completeConnectionString))
             {
                 connection.Open();
 
-                string query = "SELECT * FROM hours_played";
+                string sql = "SELECT * FROM hours_played";
 
-                allRecords = connection.Query<CodingSession>(query).ToList();
+                List<CodingSession> allRecords = connection.Query<CodingSession>(sql).ToList();
 
                 connection.Close();
 
