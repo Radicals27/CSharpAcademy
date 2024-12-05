@@ -21,7 +21,7 @@ namespace coding_tracker
 
             if (Program.IsTimingASession)
             {
-                table.AddRow("6. Stop the current session.");
+                table.AddRow($"6. Stop the current session (Started {DBController.GetSessionStartTime()})");
             }
             else
             {

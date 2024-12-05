@@ -17,6 +17,19 @@ namespace coding_tracker
         static internal DateTime? SessionStartTime;  // The recorded session's start time
         static internal DateTime? SessionEndTime;  // The recorded session's end time
 
+        static internal string GetSessionStartTime()
+        {
+            if (SessionStartTime != null)
+            {
+                return SessionStartTime.ToString();
+            }
+            else
+            {
+                Console.WriteLine("No session has begun.");
+                return "";
+            }
+        }
+
         internal static void InitialiseDB()
         {
             using (var connection = new SqliteConnection(completeConnectionString))
@@ -157,6 +170,7 @@ namespace coding_tracker
                 }
             }
 
+            Console.Clear();
             Console.WriteLine($"\n\nRecord with Id {recordId} was deleted. \n\n");
         }
 
@@ -194,6 +208,8 @@ namespace coding_tracker
                     EndTime = endTime,
                     RecordId = recordId
                 });
+
+                Console.Clear();
 
                 if (affectedRows > 0)
                 {
