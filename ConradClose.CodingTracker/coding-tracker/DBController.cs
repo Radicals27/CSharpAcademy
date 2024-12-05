@@ -28,7 +28,7 @@ namespace coding_tracker
                 var tableCmd = connection.CreateCommand();
 
                 tableCmd.CommandText =
-                    @"CREATE TABLE IF NOT EXISTS hours_played (
+                    @"CREATE TABLE IF NOT EXISTS hours_playefod (
                         Id INTEGER PRIMARY KEY AUTOINCREMENT,
                         Date DATE,
                         StartTime INTEGER,
@@ -37,7 +37,15 @@ namespace coding_tracker
 
                 tableCmd.ExecuteNonQuery();
 
-                //SeedDatabase(connection);   // Only run initially
+                // Check if the table is empty, if so, seed it
+                var checkCmd = connection.CreateCommand();
+                checkCmd.CommandText = "SELECT COUNT(*) FROM hours_played";
+                var count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                if (count == 0)
+                {
+                    SeedDatabase(connection);
+                }
 
                 connection.Close();
             }
