@@ -14,6 +14,9 @@ namespace coding_tracker
         static string databasePath = @ConfigurationManager.AppSettings.Get("DatabasePath");
         static string completeConnectionString = connectionString + databasePath;
 
+        static internal DateTime? SessionStartTime;  // The recorded session's start time
+        static internal DateTime? SessionEndTime;  // The recorded session's end time
+
         internal static void InitialiseDB()
         {
             using (var connection = new SqliteConnection(completeConnectionString))
@@ -110,8 +113,8 @@ namespace coding_tracker
         {
             string? date = UserInput.GetDateInput();
 
-            int? startTime = UserInput.GetNumberInput("\n\nWhat time did you start the session? (24hr time, i.e '1300' for 1:00pm):\n");
-            int? endTime = UserInput.GetNumberInput("\n\nWhat time did you end the session? (24hr time):\n");
+            int? startTime = UserInput.GetFourDigitTimeInput("\n\nWhat time did you start the session? (24hr time, i.e '1300' for 1:00pm):\n");
+            int? endTime = UserInput.GetFourDigitTimeInput("\n\nWhat time did you end the session? (24hr time):\n");
 
             using (var connection = new SqliteConnection(completeConnectionString))
             {
@@ -178,8 +181,8 @@ namespace coding_tracker
                 }
 
                 string? date = UserInput.GetDateInput();
-                int? startTime = UserInput.GetNumberInput("\n\nWhat time did you start the session? (24hr time, i.e '1300' for 1:00pm):\n");
-                int? endTime = UserInput.GetNumberInput("\n\nWhat time did you end the session? (24hr time):\n");
+                int? startTime = UserInput.GetFourDigitTimeInput("\n\nWhat time did you start the session? (24hr time, i.e '1300' for 1:00pm):\n");
+                int? endTime = UserInput.GetFourDigitTimeInput("\n\nWhat time did you end the session? (24hr time):\n");
 
                 string updateQuery = "UPDATE hours_played SET Date = @Date, StartTime = @StartTime, EndTime = @EndTime WHERE Id = @RecordId";
 
@@ -241,6 +244,37 @@ namespace coding_tracker
             DateTime startDate = DateTime.Now.AddYears(-1); // Start date: 1 year ago
             int range = (DateTime.Now - startDate).Days;
             return startDate.AddDays(random.Next(range)).ToString("dd-MM-yy");
+        }
+
+        internal static void StartNewSession(bool _start)
+        {
+            if (_start)
+            {
+                SessionStartTime = DateTime.Now;
+            }
+            else
+            {
+                SessionEndTime = DateTime.Now;
+
+                using (var connection = new SqliteConnection(completeConnectionString))
+                {
+                    string sql = "INSERT INTO hours_played (Date, StartTime, EndTime) VALUES (@Date, @StartTime, @EndTime)";
+
+                    if (SessionStartTime == null)
+                    {
+                        SessionStartTime = DateTime.Now;
+                    }
+
+                    connection.Execute(sql, new
+                    {
+                        Date = SessionStartTime.Value.Date,
+                        StartTime = int.Parse(SessionStartTime.Value.ToString("HHmm")),
+                        EndTime = int.Parse(SessionEndTime.Value.ToString("HHmm"))
+                    });
+                }
+            }
+
+            Console.Clear();
         }
     }
 }

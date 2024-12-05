@@ -109,5 +109,36 @@ namespace coding_tracker
 
             return finalInput;
         }
+
+        internal static int? GetFourDigitTimeInput(string message)
+        {
+            Console.WriteLine(message);
+
+            string? timeInput = Console.ReadLine();
+
+            if (timeInput == "0") return null;
+
+            while (!IsValidFourDigitTime(timeInput))
+            {
+                Console.WriteLine("\n\nInvalid time. Please enter a 4-digit time in 24-hour format (e.g., 0630, 1200):\n\n");
+                timeInput = Console.ReadLine();
+            }
+
+            return int.Parse(timeInput);
+        }
+
+        private static bool IsValidFourDigitTime(string? input)
+        {
+            // Validate the input
+            if (string.IsNullOrEmpty(input) || input.Length != 4 || !int.TryParse(input, out _))
+                return false;
+
+            // Extract hour and minute
+            int hour = int.Parse(input.Substring(0, 2));
+            int minute = int.Parse(input.Substring(2, 2));
+
+            // Validate hour (0-23) and minute (0-59)
+            return hour >= 0 && hour < 24 && minute >= 0 && minute < 60;
+        }
     }
 }

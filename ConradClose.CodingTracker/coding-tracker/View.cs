@@ -18,6 +18,16 @@ namespace coding_tracker
             table.AddRow("3. Delete a record");
             table.AddRow("4. Update a record");
             table.AddRow("5. Get report for a year");
+
+            if (Program.IsTimingASession)
+            {
+                table.AddRow("6. Stop the current session.");
+            }
+            else
+            {
+                table.AddRow("6. Start a new session now.");
+            }
+
             table.AddRow("0. Exit");
 
             AnsiConsole.Write(table);
