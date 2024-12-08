@@ -616,11 +616,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projects\\CSharpAcademy\\ConradClose.CodingTracker\\coding-tracker\\coding-tracker.csproj",
+      "projectUniqueName": "D:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\coding-tracker\\coding-tracker.csproj",
       "projectName": "coding-tracker",
-      "projectPath": "D:\\Projects\\CSharpAcademy\\ConradClose.CodingTracker\\coding-tracker\\coding-tracker.csproj",
+      "projectPath": "D:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\coding-tracker\\coding-tracker.csproj",
       "packagesPath": "C:\\Users\\Radicals\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects\\CSharpAcademy\\ConradClose.CodingTracker\\coding-tracker\\obj\\",
+      "outputPath": "D:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\coding-tracker\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

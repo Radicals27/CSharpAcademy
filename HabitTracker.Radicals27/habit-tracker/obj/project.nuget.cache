@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "71GM742ul18=",
+  "dgSpecHash": "9n0K51AnnOE=",
   "success": true,
-  "projectFilePath": "D:\\Projects\\CSharpAcademy\\ConradClose.HabitTracker\\habit-tracker\\habit-tracker.csproj",
+  "projectFilePath": "d:\\Projects\\CSharpAcademy\\HabitTracker.Radicals27\\habit-tracker\\habit-tracker.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Radicals\\.nuget\\packages\\microsoft.data.sqlite\\9.0.0\\microsoft.data.sqlite.9.0.0.nupkg.sha512",
     "C:\\Users\\Radicals\\.nuget\\packages\\microsoft.data.sqlite.core\\9.0.0\\microsoft.data.sqlite.core.9.0.0.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\CSharpAcademy\\ConradClose.HabitTracker\\habit-tracker\\habit-tracker.csproj": {}
+    "d:\\Projects\\CSharpAcademy\\HabitTracker.Radicals27\\habit-tracker\\habit-tracker.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\CSharpAcademy\\ConradClose.HabitTracker\\habit-tracker\\habit-tracker.csproj": {
+    "d:\\Projects\\CSharpAcademy\\HabitTracker.Radicals27\\habit-tracker\\habit-tracker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\CSharpAcademy\\ConradClose.HabitTracker\\habit-tracker\\habit-tracker.csproj",
+        "projectUniqueName": "d:\\Projects\\CSharpAcademy\\HabitTracker.Radicals27\\habit-tracker\\habit-tracker.csproj",
         "projectName": "habit-tracker",
-        "projectPath": "D:\\Projects\\CSharpAcademy\\ConradClose.HabitTracker\\habit-tracker\\habit-tracker.csproj",
+        "projectPath": "d:\\Projects\\CSharpAcademy\\HabitTracker.Radicals27\\habit-tracker\\habit-tracker.csproj",
         "packagesPath": "C:\\Users\\Radicals\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\CSharpAcademy\\ConradClose.HabitTracker\\habit-tracker\\obj\\",
+        "outputPath": "d:\\Projects\\CSharpAcademy\\HabitTracker.Radicals27\\habit-tracker\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

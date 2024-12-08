@@ -69,6 +69,9 @@ namespace coding_tracker
 
         internal static void SeedDatabase(SqliteConnection connection)
         {
+            Console.Clear();
+            Console.WriteLine("Please wait, seeding database on first initialisation (up to 20 seconds...)");
+
             var random = new Random();
             var insertCmd = connection.CreateCommand();
             var numberOfRecords = 100;
