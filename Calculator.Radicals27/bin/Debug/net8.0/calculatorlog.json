@@ -1,0 +1,11 @@
+{
+  "runCounter": 1,
+  "Operations": [
+    {
+      "Operand1": 2.0,
+      "Operand2": 3.0,
+      "Operation": "Add",
+      "Result": 5.0
+    }
+  ]
+}
