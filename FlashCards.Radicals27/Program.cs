@@ -39,10 +39,11 @@ namespace flashcard_app
                         break;
                     case "1":
                         View.ShowStacksMenu(DBController.GetAllStacks());
-                        HandleStackMenuSelection();
+                        HandleStackMainMenuSelection();
                         break;
                     case "2":
-                        //DBController.Insert();
+                        View.ShowFlashcardMainMenu(DBController.GetFlashcardsByStackId(1));
+                        HandleFlashcardMenuSelection();
                         break;
                     case "3":
                         // DBController.Delete();
@@ -57,14 +58,16 @@ namespace flashcard_app
             }
         }
 
-        static void HandleStackMenuSelection()
+        static void HandleStackMainMenuSelection()
         {
-            int? userSelection = UserInput.GetNumberInput("Type the stack ID to edit one, or press 0 to make a new stack.");
+            int? stackID =
+                UserInput.GetNumberInput($"Type a stack ID to edit one, or type 0 to make a new one: \n");
 
-            if (userSelection == 0)
+            if (stackID == 0)
             {
                 // Make a new stack
-                string newStackName = UserInput.GetStringInput("Enter the name of the new stack, or press 0 to return to main menu.");
+                string? newStackName =
+                    UserInput.GetStringInput("Enter the name of the new stack:");
                 DBController.AddNewStack(newStackName);
 
                 // Allow user to add flashcards to this stack
@@ -73,12 +76,78 @@ namespace flashcard_app
             else
             {
                 // Display all flashcards in this stack
-                List<Flashcard> flashcardsInStack = DBController.GetFlashcardsByStackId(userSelection);
+                List<Flashcard> flashcardsInStack = DBController.GetFlashcardsByStackId(stackID);
+                View.DisplayFlashcardsHorizontally(flashcardsInStack);
 
-                foreach (Flashcard flashcard in flashcardsInStack)
-                {
-                    Console.Write($"{flashcard.Id}. {flashcard.FrontText}");
-                }
+                View.ShowStackManageMenu(stackID, flashcardsInStack);
+                HandleStackManageSelection(stackID, flashcardsInStack);
+            }
+        }
+
+        private static void HandleStackManageSelection(int? stackID, List<Flashcard> flashcards)
+        {
+            int? userStackOption = UserInput.GetNumberInput("Your choice: ");
+
+            if (userStackOption == 1)  // Change current stack
+            {
+                Console.Clear();
+                View.ShowStacksMenu(DBController.GetAllStacks());
+                return;
+            }
+            else if (userStackOption == 2)   // Create a flashcard in stack
+            {
+                Console.Clear();
+                string? frontText = UserInput.GetStringInput("Enter the front text for the flashcard:");
+                string? backText = UserInput.GetStringInput("Enter the back text for the flashcard:");
+                DBController.CreateNewFlashcard(frontText, backText, stackID);
+            }
+            else if (userStackOption == 3)   // Edit a flashcard in stack
+            {
+                int? flashcardID = UserInput.GetNumberInput("Which flashcard ID would you like to edit: ");
+                string? frontText = UserInput.GetStringInput("Enter the new front text for the flashcard:");
+                string? backText = UserInput.GetStringInput("Enter the new back text for the flashcard:");
+                DBController.UpdateFlashcard(flashcardID, frontText, backText, stackID);
+            }
+            else if (userStackOption == 4)   // Delete a flashcard in stack
+            {
+                int? flashcardID = UserInput.GetNumberInput("Which flashcard ID would you like to delete: ");
+                DBController.DeleteFlashcard(flashcardID);
+            }
+            else
+            {
+                Console.Clear();
+                return;   // 0 for main menu or anything else was typed
+            }
+        }
+
+        static void HandleFlashcardMenuSelection()
+        {
+            int? userSelection = UserInput.GetNumberInput("");
+
+            if (userSelection == 1)  // Create a new flashcard
+            {
+                Console.Clear();
+                string? frontText = UserInput.GetStringInput("Enter the front text for the flashcard:");
+                string? backText = UserInput.GetStringInput("Enter the back text for the flashcard:");
+                DBController.CreateNewFlashcard(frontText, backText, 1);
+
+            }
+            else if (userSelection == 2)   // Edit a flashcard
+            {
+                int? flashcardID = UserInput.GetNumberInput("Which flashcard ID would you like to edit: ");
+                string? frontText = UserInput.GetStringInput("Enter the new front text for the flashcard:");
+                string? backText = UserInput.GetStringInput("Enter the new back text for the flashcard:");
+                DBController.UpdateFlashcard(flashcardID, frontText, backText, 1);
+            }
+            else if (userSelection == 3)   // Delete a flashcard
+            {
+                int? flashcardID = UserInput.GetNumberInput("Which flashcard ID would you like to delete: ");
+                DBController.DeleteFlashcard(flashcardID);
+            }
+            else
+            {
+                Console.Clear();
+                return;   // 0 for main menu or anything else was typed
             }
         }
     }

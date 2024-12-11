@@ -9,8 +9,8 @@ namespace flashcard_app
     /// </summary>
     class DBController
     {
-        static string serverName = @ConfigurationManager.AppSettings.Get("ServerName");
-        static string connectionString = $"Server={serverName};Database=FlashcardApp;Trusted_Connection=True;Encrypt=False;";
+        static string? serverName = @ConfigurationManager.AppSettings.Get("ServerName");
+        static string? connectionString = $"Server={serverName};Database=FlashcardApp;Trusted_Connection=True;Encrypt=False;";
 
         internal static void InitialiseDB()
         {
@@ -39,8 +39,6 @@ namespace flashcard_app
                 // Execute the commands
                 ExecuteSqlCommand(createStackTableQuery, connection, "Stack table created.");
                 ExecuteSqlCommand(createFlashcardsTableQuery, connection, "Flashcards table created.");
-
-                Console.ReadKey();
             }
         }
 
@@ -96,7 +94,7 @@ namespace flashcard_app
             return stacks;
         }
 
-        internal static void AddNewStack(string stackName)
+        internal static void AddNewStack(string? stackName)
         {
             using (var connection = new SqlConnection(connectionString))
             {
@@ -138,6 +136,8 @@ namespace flashcard_app
 
                     using (var reader = command.ExecuteReader())
                     {
+                        Console.Clear();
+
                         if (!reader.HasRows)
                         {
                             Console.WriteLine("No flashcards found in the stack.");
@@ -159,6 +159,93 @@ namespace flashcard_app
             }
 
             return flashcards;
+        }
+
+        internal static void CreateNewFlashcard(string? frontText, string? backText, int? stackID)
+        {
+            Console.Clear();
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string insertQuery =
+                    "INSERT INTO Flashcards (StackID, FrontText, BackText) VALUES (@StackID, @FrontText, @BackText);";
+
+                using (var command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@StackID", stackID);
+                    command.Parameters.AddWithValue("@FrontText", frontText);
+                    command.Parameters.AddWithValue("@BackText", backText);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine($"Flashcard created successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to create the flashcard.");
+                    }
+                }
+            }
+        }
+
+        internal static void UpdateFlashcard(int? flashcardID, string? frontText, string? backText, int? stackID)
+        {
+            Console.Clear();
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string updateQuery = "UPDATE Flashcards SET FrontText = @FrontText, BackText = @BackText WHERE FlashcardID = @FlashcardID;";
+
+                using (var command = new SqlCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@FlashcardID", flashcardID);
+                    command.Parameters.AddWithValue("@FrontText", frontText);
+                    command.Parameters.AddWithValue("@BackText", backText);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine($"Flashcard with ID {flashcardID} updated successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"No flashcard found with ID {flashcardID}. Update failed.");
+                    }
+                }
+            }
+        }
+
+        internal static void DeleteFlashcard(int? flashcardID)
+        {
+            Console.Clear();
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string deleteQuery = "DELETE FROM Flashcards WHERE FlashcardID = @FlashcardID;";
+
+                using (var command = new SqlCommand(deleteQuery, connection))
+                {
+                    // Add parameter to prevent SQL injection
+                    command.Parameters.AddWithValue("@FlashcardID", flashcardID);
+
+                    // Execute the delete query
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine($"Flashcard with ID {flashcardID} deleted successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"No flashcard found with ID {flashcardID}. Deletion failed.");
+                    }
+                }
+            }
         }
     }
 }
