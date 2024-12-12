@@ -21,7 +21,7 @@ namespace flashcard_app
             AnsiConsole.Write(table);
         }
 
-        internal static void ShowStacksMenu(List<Stack> stacks)
+        internal static void ShowStacksMainMenu(List<Stack> stacks)
         {
             Console.Clear();
             var table = new Table();
@@ -106,6 +106,16 @@ namespace flashcard_app
             grid.AddRow(tables.ToArray());
 
             AnsiConsole.Write(grid);
+        }
+
+        internal static void DisplaySingleFlashcard(Flashcard flashcard)
+        {
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn(new TableColumn("[bold yellow]Front[/]").Centered())
+                .AddRow(Markup.Escape(flashcard.FrontText));
+
+            AnsiConsole.Write(table);
         }
 
         internal static void ShowStackManageMenu(int? stackID, List<Flashcard> flashcards)

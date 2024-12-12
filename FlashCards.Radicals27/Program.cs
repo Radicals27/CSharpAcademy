@@ -38,24 +38,65 @@ namespace flashcard_app
                         Environment.Exit(0);
                         break;
                     case "1":
-                        View.ShowStacksMenu(DBController.GetAllStacks());
+                        View.ShowStacksMainMenu(DBController.GetAllStacks());
                         HandleStackMainMenuSelection();
                         break;
                     case "2":
                         View.ShowFlashcardMainMenu(DBController.GetFlashcardsByStackId(1));
-                        HandleFlashcardMenuSelection();
+                        HandleFlashcardMainMenuSelection();
                         break;
                     case "3":
-                        // DBController.Delete();
+                        StartStudy();
                         break;
                     case "4":
-                        //DBController.Update();
+                        // View session data
+
                         break;
                     default:
                         Console.WriteLine("\nInvalid Command. Please type a number from 0 to 4.\n");
                         break;
                 }
             }
+        }
+
+        private static void StartStudy()
+        {
+            Console.Clear();
+            int numberCorrect = 0;
+
+            // Choose a stack
+            int? stackID = UserInput.GetNumberInput("Which stack would you like to study? Enter ID:");
+
+            List<Flashcard> flashcards = DBController.GetFlashcardsByStackId(stackID);
+
+            // Randomise the flashcards
+            Random rng = new Random();
+            List<Flashcard> shuffledCards = flashcards.OrderBy(x => rng.Next()).ToList();
+
+            foreach (Flashcard flashcard in shuffledCards)
+            {
+                Console.Clear();
+                View.DisplaySingleFlashcard(flashcard);
+                string? backTextGuess = UserInput.GetStringInput("What is the back text?");
+
+                if (backTextGuess != null && backTextGuess.ToLower() == flashcard.BackText.ToLower())
+                {
+                    Console.WriteLine($"Correct! Press any key to continue.");
+                    Console.ReadKey();
+                    numberCorrect++;
+                }
+                else
+                {
+                    Console.WriteLine($"Incorrect. Press any key to continue.");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+            }
+
+            // When all done, show results , on key press return to main menu
+            Console.WriteLine($"\nYou got {numberCorrect}/{flashcards.Count} correct. Press any key to return to main menu.");
+            Console.ReadKey();
+            return;
         }
 
         static void HandleStackMainMenuSelection()
@@ -91,7 +132,7 @@ namespace flashcard_app
             if (userStackOption == 1)  // Change current stack
             {
                 Console.Clear();
-                View.ShowStacksMenu(DBController.GetAllStacks());
+                View.ShowStacksMainMenu(DBController.GetAllStacks());
                 return;
             }
             else if (userStackOption == 2)   // Create a flashcard in stack
@@ -120,7 +161,7 @@ namespace flashcard_app
             }
         }
 
-        static void HandleFlashcardMenuSelection()
+        static void HandleFlashcardMainMenuSelection()
         {
             int? userSelection = UserInput.GetNumberInput("");
 
