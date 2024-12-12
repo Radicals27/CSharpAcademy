@@ -19,26 +19,38 @@ namespace flashcard_app
                 connection.Open();
                 Console.WriteLine("Database connection successful.");
 
-                // SQL command to create the 'Stack' table
+                // Create the 'Stack' table
                 string createStackTableQuery = @"
                 CREATE TABLE Stacks (
                     StackID INT IDENTITY(1,1) PRIMARY KEY,
                     StackName NVARCHAR(100) NOT NULL
                 );";
 
-                // SQL command to create the 'Flashcards' table
+                // Create the 'Flashcards' table
                 string createFlashcardsTableQuery = @"
                 CREATE TABLE Flashcards (
                     FlashcardID INT IDENTITY(1,1) PRIMARY KEY,
-                    StackID INT NOT NULL,
                     FrontText NVARCHAR(MAX) NOT NULL,
                     BackText NVARCHAR(MAX) NOT NULL,
+                    StackID INT NOT NULL,
+                    FOREIGN KEY (StackID) REFERENCES Stacks(StackID)
+                );";
+
+                // Create the 'Study Session' table
+                string createStudySessionTableQuery = @"
+                CREATE TABLE StudySessions (
+                    StudySessionID INT IDENTITY(1,1) PRIMARY KEY,
+                    SessionDate DATETIME NOT NULL,
+                    Score INT NOT NULL,
+                    ScoreMax INT NOT NULL,
+                    StackID INT NOT NULL,
                     FOREIGN KEY (StackID) REFERENCES Stacks(StackID)
                 );";
 
                 // Execute the commands
-                ExecuteSqlCommand(createStackTableQuery, connection, "Stack table created.");
+                ExecuteSqlCommand(createStackTableQuery, connection, "Stacks table created.");
                 ExecuteSqlCommand(createFlashcardsTableQuery, connection, "Flashcards table created.");
+                ExecuteSqlCommand(createStudySessionTableQuery, connection, "Study sessions table created.");
             }
         }
 
@@ -74,7 +86,6 @@ namespace flashcard_app
                     {
                         if (!reader.HasRows)
                         {
-                            Console.WriteLine("No stacks found in the database.");
                             return stacks; // Return an empty list
                         }
 
@@ -94,22 +105,55 @@ namespace flashcard_app
             return stacks;
         }
 
-        internal static void AddNewStack(string? stackName)
+        internal static string GetStackNameFromID(int stackID)
         {
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
-                string query = "INSERT INTO Stacks (StackName) VALUES (@StackName);";
+                string query = "SELECT StackName FROM Stacks WHERE StackID = @StackId;";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@StackID", stackID);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read()) // Advance to the first record
+                        {
+                            return reader.GetString(0); // Get the value from the first column
+                        }
+                        else
+                        {
+                            return "N/A"; // No rows found
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the ID of the newly-generated stack, or -1 if it was unsuccessful
+        /// </summary>
+        internal static int AddNewStack(string? stackName)
+        {
+            int newStackId = -1;
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "INSERT INTO Stacks (StackName) VALUES (@StackName) SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 using (var command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@StackName", stackName);
 
-                    Console.Clear();
+                    // Get ID
+                    object result = command.ExecuteScalar();
 
-                    int rowsAffected = command.ExecuteNonQuery();
-                    if (rowsAffected > 0)
+                    if (result != null)
                     {
+                        newStackId = Convert.ToInt32(result);
                         Console.WriteLine($"New stack '{stackName}' added successfully.");
                     }
                     else
@@ -118,11 +162,13 @@ namespace flashcard_app
                     }
                 }
             }
+
+            return newStackId;
         }
 
-        internal static List<Flashcard> GetFlashcardsByStackId(int? stackId)
+        internal static List<FlashcardDTO> GetFlashcardsByStackId(int? stackId)
         {
-            List<Flashcard> flashcards = new List<Flashcard>();
+            List<FlashcardDTO> flashcards = new List<FlashcardDTO>();
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -136,8 +182,42 @@ namespace flashcard_app
 
                     using (var reader = command.ExecuteReader())
                     {
-                        Console.Clear();
+                        if (!reader.HasRows)
+                        {
+                            return flashcards; // Return an empty list
+                        }
 
+                        while (reader.Read())
+                        {
+                            var flashcard = new FlashcardDTO
+                            {
+                                FlashcardID = reader.GetInt32(0),
+                                FrontText = reader.GetString(1),
+                                BackText = reader.GetString(2)
+                            };
+                            flashcards.Add(flashcard);
+                        }
+                    }
+                }
+            }
+
+            return flashcards;
+        }
+
+        internal static List<FlashcardDTO> GetAllFlashcards()
+        {
+            List<FlashcardDTO> flashcards = new List<FlashcardDTO>();
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT FlashcardID, FrontText, BackText FROM Flashcards;";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
                         if (!reader.HasRows)
                         {
                             Console.WriteLine("No flashcards found in the stack.");
@@ -146,9 +226,9 @@ namespace flashcard_app
 
                         while (reader.Read())
                         {
-                            var flashcard = new Flashcard
+                            var flashcard = new FlashcardDTO
                             {
-                                Id = reader.GetInt32(0),
+                                FlashcardID = reader.GetInt32(0),
                                 FrontText = reader.GetString(1),
                                 BackText = reader.GetString(2)
                             };
@@ -191,7 +271,7 @@ namespace flashcard_app
             }
         }
 
-        internal static void UpdateFlashcard(int? flashcardID, string? frontText, string? backText, int? stackID)
+        internal static void UpdateFlashcard(int? flashcardID, string? frontText, string? backText)
         {
             Console.Clear();
 
@@ -210,11 +290,11 @@ namespace flashcard_app
                     int rowsAffected = command.ExecuteNonQuery();
                     if (rowsAffected > 0)
                     {
-                        Console.WriteLine($"Flashcard with ID {flashcardID} updated successfully.");
+                        Console.WriteLine($"Flashcard updated successfully.");
                     }
                     else
                     {
-                        Console.WriteLine($"No flashcard found with ID {flashcardID}. Update failed.");
+                        Console.WriteLine($"No flashcard found with that ID. Update failed.");
                     }
                 }
             }
@@ -238,14 +318,82 @@ namespace flashcard_app
                     int rowsAffected = command.ExecuteNonQuery();
                     if (rowsAffected > 0)
                     {
-                        Console.WriteLine($"Flashcard with ID {flashcardID} deleted successfully.");
+                        Console.WriteLine($"Flashcard deleted successfully.");
                     }
                     else
                     {
-                        Console.WriteLine($"No flashcard found with ID {flashcardID}. Deletion failed.");
+                        Console.WriteLine($"No flashcard found with that ID. Deletion failed.");
                     }
                 }
             }
+        }
+
+        internal static void CreateStudySession(int stackID, int score, int scoreMax)
+        {
+            DateTime todaysDate = DateTime.Now;
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string insertQuery =
+                    "INSERT INTO StudySessions (StackID, Score, ScoreMax, SessionDate) VALUES (@StackID, @Score, @ScoreMax, @SessionDate);";
+
+                using (var command = new SqlCommand(insertQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@StackID", stackID);
+                    command.Parameters.AddWithValue("@Score", score);
+                    command.Parameters.AddWithValue("@ScoreMax", scoreMax);
+                    command.Parameters.AddWithValue("@SessionDate", todaysDate);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine($"study session created successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Failed to create the study session.");
+                    }
+                }
+            }
+        }
+
+        internal static List<StudySession> GetAllStudySessions()
+        {
+            List<StudySession> studySessions = new List<StudySession>();
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT StackId, Score, ScoreMax, SessionDate FROM StudySessions;";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (!reader.HasRows)
+                        {
+                            return studySessions; // Return an empty list
+                        }
+
+                        while (reader.Read())
+                        {
+                            var session = new StudySession
+                            {
+                                StackID = reader.GetInt32(0),
+                                Score = reader.GetInt32(1),
+                                ScoreMax = reader.GetInt32(2),
+                                SessionDate = reader.GetDateTime(3)
+                            };
+                            studySessions.Add(session);
+                        }
+                    }
+                }
+            }
+
+            return studySessions;
         }
     }
 }

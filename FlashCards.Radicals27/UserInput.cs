@@ -24,7 +24,7 @@ namespace flashcard_app
             return stringInput;
         }
 
-        internal static int? GetNumberInput(string message)
+        internal static int GetNumberInput(string message)
         {
             Console.WriteLine(message);
 

@@ -1,50 +1,51 @@
-# Flashcard App
+# Flashcard Management Application
 
-TODO
+This is a console-based application to manage flashcards and study sessions using C#, SQL Server, and Spectre.Console for a user-friendly terminal interface.
 
 ---
 
 ## Features
 
-### 2. **Manual Session Entry**
-
--
-
-### 3. **View All Sessions**
-
-### 4. **Update Existing Sessions**
-
--
-
-### 5. **Delete Sessions**
-
--
-
-### 6. **Data Storage**
-
--
-- Dapper ORM handles database interactions, ensuring efficient and secure operations.
+- **Flashcard Management**:
+  - Add, update, view, and delete flashcards.
+  - Organize flashcards into named stacks.
+- **Study Sessions**:
+  - Track study sessions with date and scores.
+  - Retrieve and display historical session data.
+- **Interactive Console UI**:
+  - Tables and grids rendered with Spectre.Console for enhanced readability.
+- **Database Integration**:
+  - Uses SQL Server for persistent storage.
+  - Implements CRUD operations with parameterized SQL commands.
 
 ---
 
-## Usage
+## Getting Started
 
-### Start the Application
+### Prerequisites
 
-Run the application using your terminal or command prompt:
+- [.NET SDK](https://dotnet.microsoft.com/download)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server)
+- [Visual Studio Code](https://code.visualstudio.com/) (Optional but recommended)
+- [Spectre.Console](https://spectreconsole.net/) NuGet package
 
-```bash
-dotnet run
-```
+### Installation
 
----
+1. Clone the repository:
 
-## Database Structure
+   ```bash
+   git clone https://github.com/yourusername/flashcard-app.git
+   cd flashcard-app
+   ```
 
-## License
+2. Install dependencies:
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+   ```bash
+   dotnet restore
+   ```
 
-## Contact
+3. Run the app:
 
-For questions or support, please reach out via email at cclose27@gmail.com.
+   ```bash
+   dotnet run
+   ```
