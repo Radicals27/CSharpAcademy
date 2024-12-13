@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\FlashCards.Radicals27.csproj": {}
+    "D:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\FlashCards.Radicals27.csproj": {}
   },
   "projects": {
-    "d:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\FlashCards.Radicals27.csproj": {
+    "D:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\FlashCards.Radicals27.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\FlashCards.Radicals27.csproj",
+        "projectUniqueName": "D:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\FlashCards.Radicals27.csproj",
         "projectName": "FlashCards.Radicals27",
-        "projectPath": "d:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\FlashCards.Radicals27.csproj",
+        "projectPath": "D:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\FlashCards.Radicals27.csproj",
         "packagesPath": "C:\\Users\\Radicals\\.nuget\\packages\\",
-        "outputPath": "d:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\obj\\",
+        "outputPath": "D:\\Projects\\CSharpAcademy\\FlashCards.Radicals27\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
