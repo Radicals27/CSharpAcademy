@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "mhkrFy+Dvpc=",
+  "success": true,
+  "projectFilePath": "d:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Radicals\\.nuget\\packages\\spectre.console\\0.49.1\\spectre.console.0.49.1.nupkg.sha512"
+  ],
+  "logs": []
+}
