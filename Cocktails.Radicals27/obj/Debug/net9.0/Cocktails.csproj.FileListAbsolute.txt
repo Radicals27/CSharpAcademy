@@ -17,3 +17,7 @@ d:\Projects\CSharpAcademy\Cocktails.Radicals27\obj\Debug\net9.0\refint\Cocktails
 d:\Projects\CSharpAcademy\Cocktails.Radicals27\obj\Debug\net9.0\Cocktails.pdb
 d:\Projects\CSharpAcademy\Cocktails.Radicals27\obj\Debug\net9.0\Cocktails.genruntimeconfig.cache
 d:\Projects\CSharpAcademy\Cocktails.Radicals27\obj\Debug\net9.0\ref\Cocktails.dll
+d:\Projects\CSharpAcademy\Cocktails.Radicals27\bin\Debug\net9.0\ConsoleTableExt.dll
+d:\Projects\CSharpAcademy\Cocktails.Radicals27\bin\Debug\net9.0\Newtonsoft.Json.dll
+d:\Projects\CSharpAcademy\Cocktails.Radicals27\bin\Debug\net9.0\System.Net.Http.Formatting.dll
+d:\Projects\CSharpAcademy\Cocktails.Radicals27\bin\Debug\net9.0\Newtonsoft.Json.Bson.dll

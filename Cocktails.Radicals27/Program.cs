@@ -2,6 +2,7 @@
 This app allows you to create cocktails quickly and easily via API calls
 */
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace cocktails
 {
@@ -23,61 +24,41 @@ namespace cocktails
         static void MainMenuLoop()
         {
             Console.Clear();
-
-            while (quitApp == false)
-            {
-                HandleMainMenuSelection();
-            }
+            ShowMainMenu(Data.mainMenuOptions);
         }
 
-        private static void HandleMainMenuSelection()
+        static async void ShowMainMenu(Dictionary<string, Func<Task>> options)
         {
-            var mainMenuOptions = new Dictionary<string, Action>
+            Console.Clear();
+
+            View.DisplayMenu(options);
+
+            int input = UserInput.GetNumberInput("Enter your choice: ");
+
+            if (input >= 1 && input <= options.Count)
             {
-                { "Ordinary Drink", OrdinaryDrink },
-                { "Cocktail", Cocktail },
-                { "Milk / Float / Shake", MilkFloatShake },
-                { "Other / Unknown", OtherUnknown },
-                { "Cocoa", Cocoa },
-                { "Shot", Shot },
-                { "Coffee / Tea", CoffeeTea },
-                { "Homemade Liquer", HomemadeLiquer },
-                { "Punch / Party Drink", PunchPartyDrink },
-                { "Beer", Beer },
-                { "Softdrink / Soda", Softdrink },
-                { "Return to main menu.", ExitProgram }
-            };
+                var action = GetActionByIndex(options, input - 1);
 
-            RunMenu(mainMenuOptions);
-        }
-
-        static void RunMenu(Dictionary<string, Action> options)
-        {
-            while (true)
-            {
-                Console.Clear();
-
-                View.DisplayMenu(options);
-
-                int input = UserInput.GetNumberInput("Enter your choice: ");
-
-                if (input >= 1 && input <= options.Count)
+                if (action == ExitProgram)
                 {
-                    var action = GetActionByIndex(options, input - 1);
-                    action.Invoke();
-
-                    if (action == ExitProgram)
-                        break;
+                    Environment.Exit(0);
                 }
                 else
                 {
-                    Console.WriteLine("Invalid choice. Press Enter to try again.");
-                    Console.ReadLine();
+                    Console.Clear();
+                    Console.WriteLine("Please wait, retrieving...");
+
+                    await action();
                 }
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice. Press Enter to try again.");
+                Console.ReadKey();
             }
         }
 
-        static Action GetActionByIndex(Dictionary<string, Action> options, int index)
+        static Func<Task> GetActionByIndex(Dictionary<string, Func<Task>> options, int index)
         {
             int i = 0;
 
@@ -91,64 +72,96 @@ namespace cocktails
             return null;
         }
 
-        private static void OrdinaryDrink()
+        internal static async Task OrdinaryDrink()
+        {
+            string baseUrl = "https://www.thecocktaildb.com/api/json/v1/1/";
+            string endpoint = "filter.php?c=Ordinary_Drink";
+
+            using (HttpClient client = new HttpClient())
+            {
+                // Set the base address
+                client.BaseAddress = new Uri(baseUrl);
+
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync(endpoint);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseData = await response.Content.ReadAsStringAsync();
+                        var serialize = JsonConvert.DeserializeObject<Drinks>(responseData);
+                        List<Drink> returnedDrinkList = serialize.DrinkList;
+
+                        View.DisplayDrinksTable(returnedDrinkList);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode}");
+                        Console.WriteLine($"Message: {response.ReasonPhrase}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred:");
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        internal static async Task Cocktail()
         {
 
         }
 
-        private static void Cocktail()
+        internal static async Task MilkFloatShake()
         {
 
         }
 
-        private static void MilkFloatShake()
+        internal static async Task OtherUnknown()
         {
 
         }
 
-        private static void OtherUnknown()
+        internal static async Task Cocoa()
         {
 
         }
 
-        private static void Cocoa()
+        internal static async Task Shot()
         {
 
         }
 
-        private static void Shot()
+        internal static async Task CoffeeTea()
         {
 
         }
 
-        private static void CoffeeTea()
+        internal static async Task HomemadeLiquer()
         {
 
         }
 
-        private static void HomemadeLiquer()
+        internal static async Task PunchPartyDrink()
         {
 
         }
 
-        private static void PunchPartyDrink()
+        internal static async Task Beer()
         {
 
         }
 
-        private static void Beer()
+        internal static async Task Softdrink()
         {
 
         }
 
-        private static void Softdrink()
-        {
-
-        }
-
-        private static void ExitProgram()
+        internal static async Task ExitProgram()
         {
             quitApp = true;
         }
+
     }
 }
