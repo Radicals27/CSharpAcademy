@@ -2,6 +2,7 @@
 This app allows you to create cocktails quickly and easily via API calls
 */
 using System.Diagnostics;
+using System.Reflection;
 using Newtonsoft.Json;
 
 namespace cocktails
@@ -11,41 +12,39 @@ namespace cocktails
     /// </summary>
     class Program
     {
-        private static bool quitApp = false;
         private static string baseUrl = "https://www.thecocktaildb.com/api/json/v1/1/";
 
         static async Task Main(string[] args)
         {
-
-            while (quitApp == false)
+            while (true)
             {
-                Console.Clear();
-                await ShowMainMenu(Data.mainMenuOptions);
+                await ShowMainMenu();
             }
         }
 
-        static async Task ShowMainMenu(Dictionary<string, Func<Task>> options)
+        static async Task ShowMainMenu()
         {
             Console.Clear();
 
-            View.DisplayMenu(options);
+            List<Category> categories = await GetCategories();
 
-            int input = UserInput.GetNumberInput("Enter your choice: ");
+            View.DisplayCategoriesMenu(categories);
 
-            if (input >= 1 && input <= options.Count)
+            int input = await UserInput.GetNumberInput("Enter your choice: ");
+
+            if (input >= 1 && input <= categories.Count)
             {
-                var action = GetActionByIndex(options, input - 1);
+                Console.Clear();
+                Console.WriteLine("Please wait, retrieving drinks...");
+                List<Drink> categoryDrinks = await GetDrinksByCategory(categories[input].strCategory);
+                View.DisplayDrinksTable(categoryDrinks);
 
-                if (action == ExitProgram)
-                {
-                    Environment.Exit(0);
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine("Please wait, retrieving...");
-                    await action();
-                }
+                int drinkInput = await UserInput.GetNumberInput("Enter a drink ID...");
+                await GetDrinkFromInput(drinkInput);
+            }
+            else if (input == 0)
+            {
+                Environment.Exit(0);
             }
             else
             {
@@ -54,30 +53,44 @@ namespace cocktails
             }
         }
 
-        static Func<Task> GetActionByIndex(Dictionary<string, Func<Task>> options, int index)
+        internal static async Task<List<Category>> GetCategories()
         {
-            int i = 0;
+            List<Category> categories = new();
 
-            foreach (var action in options.Values)
+            using (HttpClient client = new HttpClient())
             {
-                if (i == index)
-                    return action;
-                i++;
+                client.BaseAddress = new Uri(baseUrl);
+
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync("list.php?c=list");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseData = await response.Content.ReadAsStringAsync();
+                        var serializedCategories = JsonConvert.DeserializeObject<Categories>(responseData);
+                        return serializedCategories.CategoriesList;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode}");
+                        Console.WriteLine($"Message: {response.ReasonPhrase}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred:");
+                    Console.WriteLine(ex.Message);
+                }
             }
 
-            return null;
+            return categories;
         }
 
-        internal static async Task OrdinaryDrink()
+        internal static async Task<List<Drink>> GetDrinksByCategory(string category)
         {
-            string endpoint = "filter.php?c=Ordinary_Drink";
-            List<Drink> ordinaryDrinks = await GetDrinks(endpoint);
-            Console.Clear();
-            View.DisplayDrinksTable(ordinaryDrinks);
-        }
+            string endpoint = $"filter.php?c={System.Web.HttpUtility.UrlEncode(category)}";
 
-        internal static async Task<List<Drink>> GetDrinks(string endpoint)
-        {
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(baseUrl);
@@ -108,60 +121,61 @@ namespace cocktails
             return null;
         }
 
-        internal static async Task Cocktail()
+        internal static async Task GetDrinkFromInput(int drinkID)
         {
+            string endpoint = $"lookup.php?i={drinkID}";
 
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(baseUrl);
+
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync(endpoint);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string rawResponse = await response.Content.ReadAsStringAsync();
+                        var serialize = JsonConvert.DeserializeObject<DrinkDetailObject>(rawResponse);
+                        List<DrinkDetail> returnedList = serialize.DrinkDetailList;
+                        DrinkDetail drinkDetail = returnedList[0];
+                        List<object> prepList = new();
+                        string formattedName = "";
+
+                        foreach (PropertyInfo prop in drinkDetail.GetType().GetProperties())
+                        {
+                            if (prop.Name.Contains("str"))
+                            {
+                                formattedName = prop.Name.Substring(3);
+                            }
+
+                            if (!string.IsNullOrEmpty(prop.GetValue(drinkDetail)?.ToString()))
+                            {
+                                prepList.Add(new
+                                {
+                                    Key = formattedName,
+                                    Value = prop.GetValue(drinkDetail)
+                                });
+                            }
+                        }
+
+                        View.DisplayDrinkTable(prepList);
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode}");
+                        Console.WriteLine($"Message: {response.ReasonPhrase}");
+                        Console.ReadKey();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred:");
+                    Console.WriteLine(ex.Message);
+                    Console.ReadKey();
+                }
+            }
         }
-
-        internal static async Task MilkFloatShake()
-        {
-
-        }
-
-        internal static async Task OtherUnknown()
-        {
-
-        }
-
-        internal static async Task Cocoa()
-        {
-
-        }
-
-        internal static async Task Shot()
-        {
-
-        }
-
-        internal static async Task CoffeeTea()
-        {
-
-        }
-
-        internal static async Task HomemadeLiquer()
-        {
-
-        }
-
-        internal static async Task PunchPartyDrink()
-        {
-
-        }
-
-        internal static async Task Beer()
-        {
-
-        }
-
-        internal static async Task Softdrink()
-        {
-
-        }
-
-        internal static async Task ExitProgram()
-        {
-            quitApp = true;
-        }
-
     }
 }

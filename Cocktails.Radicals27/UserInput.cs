@@ -2,7 +2,7 @@ namespace cocktails
 {
     class UserInput
     {
-        internal static int GetNumberInput(string message)
+        internal static async Task<int> GetNumberInput(string message)
         {
             Console.WriteLine(message);
 

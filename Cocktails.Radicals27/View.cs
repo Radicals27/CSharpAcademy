@@ -4,12 +4,12 @@ namespace cocktails
 {
     class View
     {
-        internal static void DisplayMenu(Dictionary<string, Func<Task>> options)
+        internal static void DisplayCategoriesMenu(List<Category> categories)
         {
             int index = 1;
-            foreach (var option in options.Keys)
+            foreach (var category in categories)
             {
-                Console.WriteLine($"{index}. {option}");
+                Console.WriteLine($"{index}. {category.strCategory}");
                 index++;
             }
         }
@@ -25,7 +25,19 @@ namespace cocktails
             }
 
             AnsiConsole.Write(table);
-            Console.ReadKey();
+        }
+
+        internal static void DisplayDrinkTable(List<object> objects)
+        {
+            var table = new Table();
+            table.AddColumn($"Drink:");
+
+            foreach (object obj in objects)
+            {
+                table.AddRow($"{obj}");
+            }
+
+            AnsiConsole.Write(table);
         }
     }
 }
