@@ -11,23 +11,20 @@ namespace cocktails
     /// </summary>
     class Program
     {
-        static bool quitApp = false;
+        private static bool quitApp = false;
+        private static string baseUrl = "https://www.thecocktaildb.com/api/json/v1/1/";
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            MainMenuLoop();
+
+            while (quitApp == false)
+            {
+                Console.Clear();
+                await ShowMainMenu(Data.mainMenuOptions);
+            }
         }
 
-        /// <summary>
-        /// Handles the core loop of showing the user the main menu and accepting input
-        /// </summary>
-        static void MainMenuLoop()
-        {
-            Console.Clear();
-            ShowMainMenu(Data.mainMenuOptions);
-        }
-
-        static async void ShowMainMenu(Dictionary<string, Func<Task>> options)
+        static async Task ShowMainMenu(Dictionary<string, Func<Task>> options)
         {
             Console.Clear();
 
@@ -47,7 +44,6 @@ namespace cocktails
                 {
                     Console.Clear();
                     Console.WriteLine("Please wait, retrieving...");
-
                     await action();
                 }
             }
@@ -74,12 +70,16 @@ namespace cocktails
 
         internal static async Task OrdinaryDrink()
         {
-            string baseUrl = "https://www.thecocktaildb.com/api/json/v1/1/";
             string endpoint = "filter.php?c=Ordinary_Drink";
+            List<Drink> ordinaryDrinks = await GetDrinks(endpoint);
+            Console.Clear();
+            View.DisplayDrinksTable(ordinaryDrinks);
+        }
 
+        internal static async Task<List<Drink>> GetDrinks(string endpoint)
+        {
             using (HttpClient client = new HttpClient())
             {
-                // Set the base address
                 client.BaseAddress = new Uri(baseUrl);
 
                 try
@@ -89,10 +89,8 @@ namespace cocktails
                     if (response.IsSuccessStatusCode)
                     {
                         string responseData = await response.Content.ReadAsStringAsync();
-                        var serialize = JsonConvert.DeserializeObject<Drinks>(responseData);
-                        List<Drink> returnedDrinkList = serialize.DrinkList;
-
-                        View.DisplayDrinksTable(returnedDrinkList);
+                        var serializedDrinks = JsonConvert.DeserializeObject<Drinks>(responseData);
+                        return serializedDrinks.DrinkList;
                     }
                     else
                     {
@@ -106,6 +104,8 @@ namespace cocktails
                     Console.WriteLine(ex.Message);
                 }
             }
+
+            return null;
         }
 
         internal static async Task Cocktail()

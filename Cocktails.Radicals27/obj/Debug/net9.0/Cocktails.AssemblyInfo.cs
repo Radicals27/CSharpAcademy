@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cocktails")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+411d828fd7bfc3e07ed6fc85badb3b6c134be2f8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1b0fc5b01f12b1eca706b2adb2d3fab439014c41")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cocktails")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cocktails")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
