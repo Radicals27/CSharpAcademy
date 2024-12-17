@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj": {}
+    "D:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj": {}
   },
   "projects": {
-    "d:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj": {
+    "D:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj",
+        "projectUniqueName": "D:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj",
         "projectName": "Cocktails",
-        "projectPath": "d:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj",
+        "projectPath": "D:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\Cocktails.csproj",
         "packagesPath": "C:\\Users\\Radicals\\.nuget\\packages\\",
-        "outputPath": "d:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\obj\\",
+        "outputPath": "D:\\Projects\\CSharpAcademy\\Cocktails.Radicals27\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

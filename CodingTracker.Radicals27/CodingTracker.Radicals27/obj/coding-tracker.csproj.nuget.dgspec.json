@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\coding-tracker.csproj": {}
+    "d:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\coding-tracker.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\coding-tracker.csproj": {
+    "d:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\coding-tracker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\coding-tracker.csproj",
+        "projectUniqueName": "d:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\coding-tracker.csproj",
         "projectName": "coding-tracker",
-        "projectPath": "D:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\coding-tracker.csproj",
+        "projectPath": "d:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\coding-tracker.csproj",
         "packagesPath": "C:\\Users\\Radicals\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\obj\\",
+        "outputPath": "d:\\Projects\\CSharpAcademy\\CodingTracker.Radicals27\\CodingTracker.Radicals27\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
