@@ -1,7 +1,6 @@
 ﻿/*
 This app allows you to create cocktails quickly and easily via API calls
 */
-using System.Diagnostics;
 using System.Reflection;
 using Newtonsoft.Json;
 
@@ -30,7 +29,7 @@ namespace cocktails
 
             View.DisplayCategoriesMenu(categories);
 
-            int input = await UserInput.GetNumberInput("Enter your choice: ");
+            int input = await UserInput.GetNumberInput("Enter your choice, or press 0 to exit. ");
 
             if (input >= 1 && input <= categories.Count)
             {
@@ -48,7 +47,7 @@ namespace cocktails
             }
             else
             {
-                Console.WriteLine("Invalid choice. Press Enter to try again.");
+                Console.WriteLine("Invalid choice. Press Enter to try again, or 0 to exit.");
                 Console.ReadKey();
             }
         }
@@ -144,6 +143,7 @@ namespace cocktails
 
                         foreach (PropertyInfo prop in drinkDetail.GetType().GetProperties())
                         {
+
                             if (prop.Name.Contains("str"))
                             {
                                 formattedName = prop.Name.Substring(3);
@@ -159,7 +159,9 @@ namespace cocktails
                             }
                         }
 
-                        View.DisplayDrinkTable(prepList);
+                        Console.Clear();
+                        View.DisplayDrinkTable(prepList, drinkID);
+                        Console.WriteLine("Press any key to return to main menu.");
                         Console.ReadKey();
                     }
                     else
