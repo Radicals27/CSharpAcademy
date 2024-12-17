@@ -60,13 +60,14 @@ namespace cocktails
                 var key = prepList[i].GetType().GetProperty("Key")?.GetValue(prepList[i])?.ToString();
                 var value = prepList[i].GetType().GetProperty("Value")?.GetValue(prepList[i])?.ToString();
 
+                // Ignore the ingredients and measures, we'll show them last
                 if (!key.StartsWith(ingredientLabel) && !key.StartsWith(measureLabel))
                 {
                     table.AddRow($"{key}: {value}");
                 }
             }
 
-            // Add ingredients and measures
+            // Show ingredients and measures now
             for (int i = 0; i < ingredients.Count; i++)
             {
                 var ingredient = ingredients[i].GetType().GetProperty("Value")?.GetValue(ingredients[i])?.ToString();
