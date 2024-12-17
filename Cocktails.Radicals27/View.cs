@@ -82,25 +82,5 @@ namespace cocktails
 
             AnsiConsole.Write(table);
         }
-
-        // internal static void DisplayDrinkTable(List<object> prepList, int drinkID)
-        // {
-        //     var table = new Table();
-        //     table.AddColumn($"Drink: {prepList[0].GetType().GetProperty("Value")?.GetValue(prepList[0])?.ToString()} (ID: {drinkID})");
-
-        //     for (var i = 0; i < prepList.Count; i++)
-        //     {
-        //         if (i == 0)
-        //         {
-        //             continue;
-        //         }
-
-        //         var key = prepList[i].GetType().GetProperty("Key")?.GetValue(prepList[i])?.ToString();
-        //         var value = prepList[i].GetType().GetProperty("Value")?.GetValue(prepList[i])?.ToString();
-        //         table.AddRow($"{key}: {value}");
-        //     }
-
-        //     AnsiConsole.Write(table);
-        // }
     }
 }
