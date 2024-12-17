@@ -27,14 +27,21 @@ namespace cocktails
             AnsiConsole.Write(table);
         }
 
-        internal static void DisplayDrinkTable(List<object> objects)
+        internal static void DisplayDrinkTable(List<object> prepList)
         {
             var table = new Table();
-            table.AddColumn($"Drink:");
+            table.AddColumn($"Drink: {prepList[0].GetType().GetProperty("Value")?.GetValue(prepList[0])?.ToString()}");
 
-            foreach (object obj in objects)
+            for (var i = 0; i < prepList.Count; i++)
             {
-                table.AddRow($"{obj}");
+                if (i == 0)
+                {
+                    continue;
+                }
+
+                var key = prepList[i].GetType().GetProperty("Key")?.GetValue(prepList[i])?.ToString();
+                var value = prepList[i].GetType().GetProperty("Value")?.GetValue(prepList[i])?.ToString();
+                table.AddRow($"{key}: {value}");
             }
 
             AnsiConsole.Write(table);
