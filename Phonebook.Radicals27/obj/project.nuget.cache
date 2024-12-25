@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "bxx3DAWQEMc=",
+  "success": true,
+  "projectFilePath": "D:\\Projects\\CSharpAcademy\\Phonebook.Radicals27\\Phonebook.Radicals27.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Radicals\\.nuget\\packages\\spectre.console\\0.49.1\\spectre.console.0.49.1.nupkg.sha512"
+  ],
+  "logs": []
+}
