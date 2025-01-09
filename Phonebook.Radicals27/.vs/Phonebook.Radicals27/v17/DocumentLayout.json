@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "D:\\Projects\\CSharpAcademy\\Phonebook.Radicals27\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4C85CA24-C7B7-44F3-A3CD-820F872CA458}|Phonebook.Radicals27.csproj|d:\\projects\\csharpacademy\\phonebook.radicals27\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4C85CA24-C7B7-44F3-A3CD-820F872CA458}|Phonebook.Radicals27.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4C85CA24-C7B7-44F3-A3CD-820F872CA458}|Phonebook.Radicals27.csproj|d:\\projects\\csharpacademy\\phonebook.radicals27\\entrycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4C85CA24-C7B7-44F3-A3CD-820F872CA458}|Phonebook.Radicals27.csproj|solutionrelative:entrycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4C85CA24-C7B7-44F3-A3CD-820F872CA458}|Phonebook.Radicals27.csproj|d:\\projects\\csharpacademy\\phonebook.radicals27\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4C85CA24-C7B7-44F3-A3CD-820F872CA458}|Phonebook.Radicals27.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,30 +18,30 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "EntryController.cs",
               "DocumentMoniker": "D:\\Projects\\CSharpAcademy\\Phonebook.Radicals27\\EntryController.cs",
               "RelativeDocumentMoniker": "EntryController.cs",
               "ToolTip": "D:\\Projects\\CSharpAcademy\\Phonebook.Radicals27\\EntryController.cs",
               "RelativeToolTip": "EntryController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAACAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-18T20:12:30.654Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Projects\\CSharpAcademy\\Phonebook.Radicals27\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\Projects\\CSharpAcademy\\Phonebook.Radicals27\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAAAC4AAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-18T20:07:20.24Z",
               "EditorCaption": ""

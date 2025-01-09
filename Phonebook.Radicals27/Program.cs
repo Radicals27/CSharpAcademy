@@ -1,6 +1,6 @@
 ﻿using Spectre.Console;
 
-namespace Phonebook
+namespace PhoneBook
 {
     internal class Program
     {
